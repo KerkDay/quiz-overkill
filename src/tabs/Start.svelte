@@ -105,6 +105,7 @@
     <!-- Title/Description -->
     <div class='span-2'>
       <h1>Quiz Overkill</h1>
+      <p>A tool to write a more complex and creative personality quiz.</p>
       {#if error}
         <div class='error'>{error}</div>
       {/if}
