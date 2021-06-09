@@ -31,8 +31,6 @@
 		else currentTab = null
 	}
 
-	setContext('setCurrentTab', setCurrentTab)
-
 </script>
 
 <main>
