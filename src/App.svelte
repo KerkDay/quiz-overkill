@@ -1,10 +1,48 @@
 <script>
-	export let name;
+
+	// Import Svelte Stuff
+	import {setContext} from 'svelte'
+
+	// Import Components
+	import Start from './tabs/Start.svelte'
+	import Options from './tabs/Options.svelte'
+	import Characters from './tabs/Characters.svelte'
+	import Questions from './tabs/Questions.svelte'
+
+	// Import Stores
+	import { optStore, charStore, qStore } from './stores.js'
+	// Send those stores to global contexts, so that children can use these stores without them being passed down.
+	setContext('options', optStore)
+	setContext('characters', charStore)
+	setContext('questions', qStore)
+
+	// The different tabs available
+	let tabs = [
+		{ title: 'Options', comp: Options },
+		{ title: 'Characters', comp: Characters },
+		{ title: 'Questions', comp: Questions }
+	]
+
+	// What is the current tab?
+	let currentTab = null
+
+	const setCurrentTab = (num) => {
+		if (typeof num === 'number') currentTab = tabs[num]
+		else currentTab = null
+	}
+
+	setContext('setCurrentTab', setCurrentTab)
+
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+
+	{#if currentTab === null}
+		<Start {setCurrentTab} />
+	{:else}
+		<h1>{currentTab.title}</h1>
+		<svelte:component this={currentTab.comp} />
+	{/if}
 </main>
 
 <style lang="sass">
@@ -13,12 +51,6 @@
 		padding: 1em
 		max-width: 240px
 		margin: 0 auto
-
-	h1 
-		color: #ff3e00
-		text-transform: uppercase
-		font-size: 4em
-		font-weight: 100
 
 	@media (min-width: 640px) 
 		main 
