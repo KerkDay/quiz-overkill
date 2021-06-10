@@ -4,4 +4,23 @@
 :root {
 	font-size: 18px;
 	font-family: Roboto, sans-serif;
+
+	/* VARIABLES */
+	/* Colors */
+	--red: #ae2334;
+	--blue:  #4d65b4;
+	--green:  #239063;
+	--yellow: #f79617;
+
+	--back: linear-gradient(-45deg, #6b3e75,  #45293f );
+
+
+	/* Sizes */
+	--ideal-width: clamp(40ch, 50%, 75ch);
+}
+
+@media screen and (max-width: 576px) {
+	:root {
+		--ideal-width: 100%;
+	}
 }
