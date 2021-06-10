@@ -3,6 +3,10 @@
   import { quadInOut } from 'svelte/easing'
   import { getContext, setContext } from 'svelte';
 
+  // For Icons
+  import SvgIcon from '@jamescoyle/svelte-icon'
+  import { mdiFileUpload, mdiFilePlus } from '@mdi/js'; 
+
   export let setCurrentTab; // Change what the tab is.
   
   let opts = getContext('options')
@@ -80,7 +84,7 @@
           opts.set(result.options)
           chars.set(result.characters)
           ques.set(result.questions)
-          setCurrentTab(0)
+          setCurrentTab(1)
         }
         else {
           error = 'Cannot Read Quiz File'
@@ -120,14 +124,16 @@
     {:else}
     
       <!-- New Quiz -->
-      <div on:click="{() => handleNewQuiz()}" >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg><br />
+      <div class='new-quiz' on:click="{() => handleNewQuiz()}" >
+        <SvgIcon path={mdiFilePlus} type='mdi' size='2em'/>
+        <br />
         New Quiz
       </div>
 
       <!-- Load Quiz -->
-      <label>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="16 12 12 8 8 12"></polyline><line x1="12" y1="16" x2="12" y2="8"></line></svg><br />
+      <label class='load-quiz'>
+        <SvgIcon path={mdiFileUpload} type='mdi' size='2em'/>
+        <br />
         Load Quiz
         <input type='file' hidden on:change='{() => handleLoadFile()}'/>
       </label>
@@ -150,7 +156,7 @@
     width: 100vw;
     height: 100vh;
     background: hotpink;
-    background-image: linear-gradient(-45deg, rgb(141, 101, 139), rgb(195, 116, 214)); 
+    background-image: var(--back); 
     display: grid;
     place-items: center;
     transition: transform 1s;
@@ -159,12 +165,27 @@
     background: white;
     border-radius: 2em;
     padding: 1em;
-
+    margin: 1ch 1rem;
     display: grid;
     grid-template-columns: 50% 50%;
+    box-shadow: .2em .2em 1em rgba(0,0,0,0.25);
   }
   .span-2 {
     grid-column-start: span 2;
+  }
+
+  .load-quiz {color: #3f51b5}
+  .new-quiz {color: #2e7d32}
+
+  .new-quiz, .load-quiz {
+    cursor: pointer;
+    margin: 0 2ch;
+    padding: 1ch .5rem;
+    transition: background-color .2s;
+    border-radius: 1em; 
+    &:hover {
+      background-color: rgba(0,0,0,0.1);
+    }
   }
 
   .error {
@@ -188,12 +209,8 @@
   }
 
   @keyframes loadingbg{
-    0% {
-      background-position-x: -10ch;
-    }
-    100% { 
-      background-position-x: 10ch;
-    }
+    0% { background-position-x: -10ch; }
+    100% { background-position-x: 10ch; }
   }
 
   .drop {
@@ -206,5 +223,10 @@
     height: 100vh;
     display: grid;
     place-items: center;
+  }
+
+  p {
+    width: 30ch;
+    @media (max-width: 500px) {width: 100%}
   }
 </style>
