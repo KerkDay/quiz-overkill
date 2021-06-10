@@ -31,6 +31,11 @@
 		else currentTab = null
 	}
 
+	window.onbeforeunload = function() {
+		if (currentTab !== null) return 'Unsaved progress may be lost'
+		else return
+	}
+
 </script>
 
 <main>
