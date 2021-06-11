@@ -52,10 +52,12 @@
 	main
 		text-align: center
 		padding: 1em
-		max-width: 240px
 		margin: 0 auto
+		box-sizing: border-box
+		max-width: 100vw
 
-	@media (min-width: 640px) 
+	@media (max-width: 640px) 
 		main 
 			max-width: none
+			padding: 1ch
 </style>
