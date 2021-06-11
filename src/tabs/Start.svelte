@@ -156,13 +156,14 @@
     width: 100vw;
     height: 100vh;
     background: hotpink;
-    background-image: var(--back); 
+    background-image: var(--back-start); 
     display: grid;
     place-items: center;
     transition: transform 1s;
+    z-index: 5;
   }
   .box {
-    background: white;
+    background: black;
     border-radius: 2em;
     padding: 1em;
     margin: 1ch 1rem;
