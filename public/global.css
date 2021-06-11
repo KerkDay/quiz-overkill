@@ -4,6 +4,7 @@
 :root {
 	font-size: 18px;
 	font-family: Roboto, sans-serif;
+	color: var(--white);
 
 	/* VARIABLES */
 	/* Colors */
@@ -11,12 +12,22 @@
 	--blue:  #4d65b4;
 	--green:  #239063;
 	--yellow: #f79617;
+	--white: white;
+	--grey: #7f708a;
+	--black: #2e222f;
+
+	--color:  var(--white);
 
 	--back: linear-gradient(-45deg, #6b3e75,  #45293f );
+	--back-start: linear-gradient(-45deg, #6b3e75,  #45293f );
 
 
 	/* Sizes */
 	--ideal-width: clamp(40ch, 50%, 75ch);
+}
+
+body {
+	background: var(--back);
 }
 
 @media screen and (max-width: 576px) {
