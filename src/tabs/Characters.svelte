@@ -4,12 +4,22 @@
   import Character from '../parts/characters/Character.svelte'
 
   let characters = getContext('characters')
+
+  let opened = ''
+
+  let handleOpen = (val) => { opened = val }
 </script>
 
 <div>
   <characters>
-    {#each $characters as char }
-      <Character {char} />
+    {#each $characters as char, index }
+      <Character 
+        {char} 
+        prev={$characters[index-1] ? $characters[index-1].id : null} 
+        next={$characters[index+1] ? $characters[index+1].id : null} 
+        {opened}
+        {handleOpen}
+      />
     {/each}
   </characters>
 </div>

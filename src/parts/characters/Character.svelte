@@ -1,11 +1,19 @@
 <script>
+  // Svelte Stuff
 	import { quintOut } from 'svelte/easing';
 	import { crossfade, fade } from 'svelte/transition';
+
+  // Image Compression 
+  import imageCompression, { getDataUrlFromFile } from 'browser-image-compression'
+
+  // Components
   import SvgIcon from '@jamescoyle/svelte-icon'
-  import { mdiArrowLeftCircle, mdiArrowRightCircle, mdiImagePlus, mdiImageRemove, mdiAccountQuestion  } from '@mdi/js'; 
+  import { mdiArrowLeftCircle, mdiArrowRightCircle, mdiImagePlus, mdiImageRemove, mdiAccountQuestion  } from '@mdi/js';
 
-  export let char, opened, prev, next
+  // Imported Stuff
+  export let char, opened, prev, next, handleOpen
 
+  // Fade between opened/unopened items
   const [send, receive] = crossfade({
 		duration: d => Math.sqrt(d * 200),
 
@@ -20,28 +28,28 @@
   function handleRemoveImg() {
     char.img = null
   }
-  function handleUploadImg(input) {
+  async function handleUploadImg(input) {
     let img = input.target.files[0]
     if (/image\/*/g.test(img.type)) {
-      let reader = new FileReader();
+      
 
-      reader.addEventListener('load', (e) => {
-        char.img=e.target.result
-      }) 
-
-      reader.readAsDataURL( img )
-    } else {
-
+      try {
+        const compressedImg = await imageCompression(img, {
+          maxWidthOrHeight: 300,
+          useWebWorker: true
+        })
+        char.img = await imageCompression.getDataUrlFromFile(compressedImg)
+      } catch (err) {
+      }
     }
-    
   }
 
 </script>
 
-<character class='{opened === char.id ? 'opened' : ''}' >
+<character >
 
   {#if opened !== char.id}
-  <div class='thumb' on:click={()=>{opened=char.id}}
+  <div class='thumb' on:click={handleOpen(char.id)}
     in:receive="{{key: char.id}}"
     out:send="{{key: char.id}}"
   >
@@ -65,7 +73,7 @@
   </div>
 
   {:else}
-    <div class='modal-outer' on:click|stopPropagation|self={()=>{opened=''}} transition:fade='{{duration: 300}}' >
+    <div class='modal-outer' on:click|self={handleOpen('')}>
       <div class='modal-inner'
         in:receive="{{key: char.id}}"
         out:send="{{key: char.id}}"
@@ -115,13 +123,23 @@
             
           </right>
       </div>
+
+      <!-- Purely Costmetic Close Icon -->
       <x>&times;</x>
-      <div class='prev' on:click|stopPropagation|self={() => {opened = prev}}>
+
+      <!-- Previous Item -->
+      <!-- TODO: Doesnt work! -->
+      {#if prev}
+      <div class='prev' on:click={handleOpen(prev)}>
         <SvgIcon path={mdiArrowLeftCircle} type='mdi' size='2em'/>
       </div>
-      <div class='next' on:click|stopPropagation|self={() => {opened = next}}>
+      {/if}
+      <!-- Next item -->
+      {#if next}
+      <div class='next' on:click={handleOpen(next)}>
         <SvgIcon path={mdiArrowRightCircle} type='mdi' size='2em'/>
       </div>
+      {/if}
     </div>
 
   {/if}
@@ -172,7 +190,8 @@ character { width: 8rem; height: 8.5rem; }
   top: 0; left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0,0,0,0.9);
+  background-color: rgba(0,0,0,0);
+  &:last-of-type {background: rgba(0,0,0,0.9);}
 }
 x {
   pointer-events: none;
@@ -216,6 +235,7 @@ x {
       display: flex;
       flex-direction: column;
       justify-content: center;
+      font-size: 1rem;
       background: rgba(0,0,0,0.75);
       &:hover {
         opacity: 1;
@@ -265,7 +285,6 @@ x {
   }
   textarea {
     width: 100%;
-    max-width: 100%;
     resize: none;
     background: var(--black);
     border: none;
