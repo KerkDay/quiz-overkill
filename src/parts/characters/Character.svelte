@@ -1,16 +1,10 @@
 <script>
 	import { quintOut } from 'svelte/easing';
-	import { crossfade } from 'svelte/transition';
+	import { crossfade, fade } from 'svelte/transition';
+  import SvgIcon from '@jamescoyle/svelte-icon'
+  import { mdiArrowLeftCircle, mdiArrowRightCircle, mdiImagePlus, mdiImageRemove, mdiAccountQuestion  } from '@mdi/js'; 
 
-
-
-  export let char
-
-  var opened = false
-
-  function toggleOpen() {
-    opened = !opened
-  }
+  export let char, opened, prev, next
 
   const [send, receive] = crossfade({
 		duration: d => Math.sqrt(d * 200),
@@ -19,29 +13,49 @@
 			const style = getComputedStyle(node);
 			const transform = style.transform === 'none' ? '' : style.transform;
 
-			return {
-				duration: 600,
-				easing: quintOut,
-				css: t => `
-					transform: ${transform} scale(${t});
-					opacity: ${t}
-				`
-			};
+			return { duration: 600, easing: quintOut, css: t => ` transform: ${transform} scale(${t}); opacity: ${t} ` };
 		}
 	});
 
+  function handleRemoveImg() {
+    char.img = null
+  }
+  function handleUploadImg(input) {
+    let img = input.target.files[0]
+    if (/image\/*/g.test(img.type)) {
+      let reader = new FileReader();
+
+      reader.addEventListener('load', (e) => {
+        char.img=e.target.result
+      }) 
+
+      reader.readAsDataURL( img )
+    } else {
+
+    }
+    
+  }
+
 </script>
 
-<character class='{opened ? 'opened' : ''}' >
+<character class='{opened === char.id ? 'opened' : ''}' >
 
-  {#if !opened}
-  <div class='thumb' on:click={toggleOpen}
+  {#if opened !== char.id}
+  <div class='thumb' on:click={()=>{opened=char.id}}
     in:receive="{{key: char.id}}"
     out:send="{{key: char.id}}"
   >
     <!-- Image -->
     <div class='img'>
-      <img src='{char.img}' alt='{char.name}'/>
+      {#if char.img}
+        <img src='{char.img ? char.img : ''}' alt='{char.name}'/>
+      {:else}
+        <div class='default-img'>
+          <SvgIcon path={mdiAccountQuestion} type='mdi' size='2em'/>
+          <br />
+          No Image
+        </div>
+      {/if}
     </div>
 
     <!-- Desc -->
@@ -51,7 +65,7 @@
   </div>
 
   {:else}
-    <div class='modal-outer' on:click|stopPropagation|self={toggleOpen}>
+    <div class='modal-outer' on:click|stopPropagation|self={()=>{opened=''}} transition:fade='{{duration: 300}}' >
       <div class='modal-inner'
         in:receive="{{key: char.id}}"
         out:send="{{key: char.id}}"
@@ -59,20 +73,55 @@
           <left>
             <!-- Image -->
             <div class='img'>
-              <img src='{char.img}' alt='{char.name}'/>
+              {#if char.img}
+                <img src='{char.img ? char.img : ''}' alt='{char.name}'/>
+              {:else}
+                <div class='default-img'>
+                  <SvgIcon path={mdiAccountQuestion} type='mdi' size='2em'/>
+                  <br />
+                  No Image
+                </div>
+              {/if}
+              
+              
+              <div class='overlay'>
+                <label class='change-img'>
+                  <SvgIcon path={mdiImagePlus} type='mdi' size='1em'/>
+                  <span> Upload Image</span>
+                  <input type='file' accept='image/*' hidden on:change={handleUploadImg} />
+                </label>
+                <div class='remove-img' on:click={handleRemoveImg}>
+                  <SvgIcon path={mdiImageRemove} type='mdi' size='1em'/>
+                  <span> Remove Image</span>
+                </div>
+              </div>
             </div>
 
-            <!-- Desc -->
-            <div>
-              <strong>{char.name}</strong>
+            <!-- Name -->
+            <div class='name'>
+              <!-- svelte-ignore a11y-label-has-associated-control -->
+              <label>Name</label>
+              <input type='text' maxLength='30' placeholder='Nobody' bind:value={char.name}/>
             </div>
           </left>
 
           <right>
-            Right stuff
+            <!-- Description -->
+            <div class='desc'>
+              <!-- svelte-ignore a11y-label-has-associated-control -->
+              <label>Description</label>
+              <textarea placeholder='Descriptionless' bind:value={char.desc}></textarea>
+            </div>
+            
           </right>
       </div>
       <x>&times;</x>
+      <div class='prev' on:click|stopPropagation|self={() => {opened = prev}}>
+        <SvgIcon path={mdiArrowLeftCircle} type='mdi' size='2em'/>
+      </div>
+      <div class='next' on:click|stopPropagation|self={() => {opened = next}}>
+        <SvgIcon path={mdiArrowRightCircle} type='mdi' size='2em'/>
+      </div>
     </div>
 
   {/if}
@@ -83,16 +132,26 @@
 
 character { width: 8rem; height: 8.5rem; }
 
+
+.img {
+  font-size: .75rem;
+  color: var(--grey);
+}
+
 .thumb {
   background: black;
   border-radius: .5rem;
   padding: .5rem;
-  img {
-    margin: auto;
+  .img {
     width: 7rem;
     height: 7rem;
-    object-fit: cover;
-    display: block;
+    display: grid;
+    place-items: center;
+    img {
+      display: block;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
   }
 }
 
@@ -125,8 +184,7 @@ x {
 }
 .modal-inner {
   display: grid;
-  grid-template-columns: 15rem auto;
-  background: black;
+  grid-template-columns: auto auto;
   border-radius: 1em;
   pointer-events: visible;
   transition: all 1s;
@@ -135,14 +193,101 @@ x {
   grid-gap: 1em;
 
   @media screen and (max-width: 500px) {grid-template-columns: auto;}
-
-  img {
-    position: relative;
-    display: block;
+  .img {
+    display: grid;
+    place-items: center;
     width: 15rem;
     height: 15rem;
-    object-fit: cover;
+    padding: .5rem;
+    background-color: var(--black);
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    .overlay {
+      position: absolute;
+      left: 0; right: 0;
+      top: 0; bottom: 0;
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: rgba(0,0,0,0.75);
+      &:hover {
+        opacity: 1;
+      }
+      .change-img { color: var(--blue); }
+      .remove-img { color: var(--red); }
+      .change-img, .remove-img {cursor:pointer; margin: 1em;}
+    }
   }
 }
+
+.name {
+  position: relative;
+  label {
+    position: absolute;
+    top: .5rem;
+    left: .5rem;
+    color: var(--grey);
+    font-size: .75rem;
+
+  }
+  input {
+    border: none;
+    background: var(--black);
+    border-bottom: 1px solid var(--grey);
+    color: var(--white);
+    font-size: 1rem;
+    font-family: var(--font);
+    padding: 1.5rem .5rem .5rem .5rem;
+    width: 15rem;
+    &:focus { outline: none; }
+    &::placeholder { color: var(--grey); }
+  }
+}
+.desc {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  position: relative;
+  label {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    color: var(--grey);
+    z-index: 6;
+    font-size: .75rem;
+  }
+  textarea {
+    width: 100%;
+    max-width: 100%;
+    resize: none;
+    background: var(--black);
+    border: none;
+    border-bottom: 1px solid var(--grey);
+    color: var(--white);
+    font-size: 1rem;
+    font-family: var(--font);
+    flex-grow: 1;
+    padding: 1.5rem .5rem .5rem .5rem;
+    &:focus { outline: none; }
+    &::placeholder { color: var(--grey); }
+  }
+}
+
+.prev, .next {
+  display: block;
+  position: fixed;
+  color: var(--white);
+  &:hover {color: var(--grey);}
+  z-index: 5;
+}
+.prev {left: 1em;}
+.next {right: 1em;}
 
 </style>
