@@ -4,7 +4,7 @@
 	import { crossfade, fade } from 'svelte/transition';
 
   // Image Compression 
-  import imageCompression, { getDataUrlFromFile } from 'browser-image-compression'
+  import imageCompression from 'browser-image-compression'
 
   // Components
   import SvgIcon from '@jamescoyle/svelte-icon'
@@ -46,6 +46,8 @@
 
 </script>
 
+
+
 <character >
 
   {#if opened !== char.id}
@@ -68,7 +70,11 @@
 
     <!-- Desc -->
     <div>
-      <strong>{char.name}</strong>
+      {#if char.name}
+        <strong>{char.name}</strong>
+      {:else}
+        <strong style='color:var(--grey)'>Nobody</strong>
+      {/if}
     </div>
   </div>
 
@@ -80,7 +86,7 @@
       >
           <left>
             <!-- Image -->
-            <div class='img'>
+            <button class='img'>
               {#if char.img}
                 <img src='{char.img ? char.img : ''}' alt='{char.name}'/>
               {:else}
@@ -103,7 +109,7 @@
                   <span> Remove Image</span>
                 </div>
               </div>
-            </div>
+            </button>
 
             <!-- Name -->
             <div class='name'>
@@ -125,18 +131,18 @@
       </div>
 
       <!-- Purely Costmetic Close Icon -->
-      <x>&times;</x>
+      <x transition:fade >&times;</x>
 
       <!-- Previous Item -->
       <!-- TODO: Doesnt work! -->
       {#if prev}
-      <div class='prev' on:click={handleOpen(prev)}>
+      <div class='prev' on:click={handleOpen(prev)} transition:fade>
         <SvgIcon path={mdiArrowLeftCircle} type='mdi' size='2em'/>
       </div>
       {/if}
       <!-- Next item -->
       {#if next}
-      <div class='next' on:click={handleOpen(next)}>
+      <div class='next' on:click={handleOpen(next)} transition:fade>
         <SvgIcon path={mdiArrowRightCircle} type='mdi' size='2em'/>
       </div>
       {/if}
@@ -146,14 +152,21 @@
   
 </character>
 
+
+
 <style lang='scss'>
 
-character { width: 8rem; height: 8.5rem; }
-
+character { display: block; }
 
 .img {
   font-size: .75rem;
   color: var(--grey);
+}
+
+img {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: cover;
 }
 
 .thumb {
@@ -165,19 +178,16 @@ character { width: 8rem; height: 8.5rem; }
     height: 7rem;
     display: grid;
     place-items: center;
-    img {
-      display: block;
-      width: 100%; height: 100%;
-      object-fit: cover;
-    }
+    margin: auto;
+    img { border-radius: .5rem; }
   }
 }
 
 @media screen and (max-width: 500px) {
-  character { width: 6em; height: 6.5em; }
   .thumb {
-    border-radius: .5rem; padding: .5rem;
-    img { width: 5rem; height: 5rem; }
+    border-radius: .25rem; padding: .25rem;
+    .img {width: 5rem; height: 5rem; }
+    img {border-radius: .25rem;}
   }
 }
 
@@ -186,11 +196,7 @@ character { width: 8rem; height: 8.5rem; }
   display: grid;
   place-items: center;
   position: fixed;
-  z-index: 4;
-  top: 0; left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0);
+  inset: 0;
   &:last-of-type {background: rgba(0,0,0,0.9);}
 }
 x {
@@ -205,7 +211,6 @@ x {
   display: grid;
   grid-template-columns: auto auto;
   border-radius: 1em;
-  pointer-events: visible;
   transition: all 1s;
   padding: 1em;
   margin: 2ch;
@@ -213,19 +218,26 @@ x {
 
   @media screen and (max-width: 500px) {grid-template-columns: auto;}
   .img {
+    aspect-ratio: 1 / 1;
     display: grid;
     place-items: center;
-    width: 15rem;
-    height: 15rem;
     padding: .5rem;
     background-color: var(--black);
     position: relative;
-
-    img {
-      width: 100%;
-      height: 100%;
+    border: 0;
+    width: 100%;
+    min-height: 5em;
+    
+    &:hover, &:focus {
+      .overlay {
+        opacity: 1;
+      }
+      .change-img, .remove-img { pointer-events: auto !important;}
+    }
+    img { 
       object-fit: contain;
-      display: block;
+      width: 15rem;
+      height: 15rem;
     }
     .overlay {
       position: absolute;
@@ -237,14 +249,18 @@ x {
       justify-content: center;
       font-size: 1rem;
       background: rgba(0,0,0,0.75);
-      &:hover {
-        opacity: 1;
-      }
-      .change-img { color: var(--blue); }
-      .remove-img { color: var(--red); }
-      .change-img, .remove-img {cursor:pointer; margin: 1em;}
+      
     }
   }
+}
+.change-img { color: var(--blue); }
+.remove-img { color: var(--red); }
+.change-img, .remove-img { 
+  cursor:pointer; 
+  margin: 1em; 
+  pointer-events: none;
+  font-weight: bold;
+  text-shadow: 0 0 1em black;
 }
 
 .name {
@@ -265,7 +281,7 @@ x {
     font-size: 1rem;
     font-family: var(--font);
     padding: 1.5rem .5rem .5rem .5rem;
-    width: 15rem;
+    width: 100%;
     &:focus { outline: none; }
     &::placeholder { color: var(--grey); }
   }
