@@ -104,10 +104,12 @@
                   <span> Upload Image</span>
                   <input type='file' accept='image/*' hidden on:change={handleUploadImg} />
                 </label>
-                <div class='remove-img' on:click={handleRemoveImg}>
-                  <SvgIcon path={mdiImageRemove} type='mdi' size='1em'/>
-                  <span> Remove Image</span>
-                </div>
+                {#if char.img}
+                  <div class='remove-img' on:click={handleRemoveImg}>
+                    <SvgIcon path={mdiImageRemove} type='mdi' size='1em'/>
+                    <span> Remove Image</span>
+                  </div>
+                {/if}
               </div>
             </button>
 
