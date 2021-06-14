@@ -3,8 +3,10 @@
 
 :root {
 	font-size: 18px;
-	font-family: Roboto, sans-serif;
+	font-family: var(--font);
 	color: var(--white);
+
+	--font: Roboto, sans-serif;
 
 	/* VARIABLES */
 	/* Colors */
@@ -26,12 +28,18 @@
 	--ideal-width: clamp(40ch, 50%, 75ch);
 }
 
+* {
+	box-sizing: border-box
+}
+
 body {
 	background: var(--back);
+	padding: 0; margin: 0;
 }
 
 @media screen and (max-width: 576px) {
 	:root {
 		--ideal-width: 100%;
+		font-size: 16px;
 	}
 }
