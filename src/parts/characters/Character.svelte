@@ -8,10 +8,11 @@
 
   // Components
   import SvgIcon from '@jamescoyle/svelte-icon'
-  import { mdiArrowLeftCircle, mdiArrowRightCircle, mdiImagePlus, mdiImageRemove, mdiAccountQuestion  } from '@mdi/js';
+  import { mdiArrowLeftCircle, mdiArrowRightCircle, mdiImagePlus, mdiImageRemove, mdiAccountQuestion  } from '@mdi/js'
+  import debounce from 'lodash/debounce'
 
   // Imported Stuff
-  export let char, opened, prev, next, handleOpen
+  export let char, opened, handleOpen, index
 
   // Fade between opened/unopened items
   const [send, receive] = crossfade({
@@ -44,14 +45,24 @@
     }
   }
 
+	document.addEventListener('keydown', debounce((e) => {
+    if (opened === index) {
+      if ( e.key === 'ArrowLeft' ) {
+        handleOpen(index-1)
+      } else if ( e.key === 'ArrowRight') {
+        handleOpen(index+1)
+      }
+    }
+	}))
+
 </script>
 
 
 
-<character >
+<character id={char.id}>
 
-  {#if opened !== char.id}
-  <div class='thumb' on:click={handleOpen(char.id)}
+  {#if opened !== index}
+  <div class='thumb' on:click={handleOpen(index)}
     in:receive="{{key: char.id}}"
     out:send="{{key: char.id}}"
   >
@@ -79,7 +90,7 @@
   </div>
 
   {:else}
-    <div class='modal-outer' on:click|self={handleOpen('')}>
+    <div class='modal-outer' on:click|self={handleOpen(null)}>
       <div class='modal-inner'
         in:receive="{{key: char.id}}"
         out:send="{{key: char.id}}"
@@ -137,17 +148,13 @@
 
       <!-- Previous Item -->
       <!-- TODO: Doesnt work! -->
-      {#if prev}
-      <div class='prev' on:click={handleOpen(prev)} transition:fade>
+      <div class='prev' on:click={handleOpen(index-1)} transition:fade>
         <SvgIcon path={mdiArrowLeftCircle} type='mdi' size='2em'/>
       </div>
-      {/if}
       <!-- Next item -->
-      {#if next}
-      <div class='next' on:click={handleOpen(next)} transition:fade>
+      <div class='next' on:click={handleOpen(index+1)} transition:fade>
         <SvgIcon path={mdiArrowRightCircle} type='mdi' size='2em'/>
       </div>
-      {/if}
     </div>
 
   {/if}
@@ -157,6 +164,10 @@
 
 
 <style lang='scss'>
+
+@mixin inset {
+  top: 0; left: 0; right: 0; bottom: 0;
+}
 
 character { display: block; }
 
@@ -198,7 +209,7 @@ img {
   display: grid;
   place-items: center;
   position: fixed;
-  inset: 0;
+  @include inset;
   &:last-of-type {background: rgba(0,0,0,0.9);}
 }
 x {
@@ -214,10 +225,8 @@ x {
   grid-template-columns: auto auto;
   border-radius: 1em;
   transition: all 1s;
-  padding: 1em;
-  margin: 2ch;
+  padding: 1em; margin: 2ch;
   grid-gap: 1em;
-
   @media screen and (max-width: 500px) {grid-template-columns: auto;}
   .img {
     aspect-ratio: 1 / 1;
@@ -229,22 +238,18 @@ x {
     border: 0;
     width: 100%;
     min-height: 5em;
-    
     &:hover, &:focus {
-      .overlay {
-        opacity: 1;
-      }
+      outline: none;
+      .overlay { opacity: 1; }
       .change-img, .remove-img { pointer-events: auto !important;}
     }
-    img { 
+    img {
       object-fit: contain;
-      width: 15rem;
-      height: 15rem;
+      width: 15rem; height: 15rem;
     }
     .overlay {
       position: absolute;
-      left: 0; right: 0;
-      top: 0; bottom: 0;
+      @include inset;
       opacity: 0;
       display: flex;
       flex-direction: column;
@@ -258,34 +263,41 @@ x {
 .change-img { color: var(--blue); }
 .remove-img { color: var(--red); }
 .change-img, .remove-img { 
-  cursor:pointer; 
+  cursor: pointer; 
   margin: 1em; 
   pointer-events: none;
   font-weight: bold;
   text-shadow: 0 0 1em black;
+  top: 50%;
 }
 
+
+/* Character Inputs */
+@mixin input {
+  font-family: var(--font); font-size: 1rem;
+  color: var(--white);
+  background: var(--black);
+  border: none;
+  border-bottom: 1px solid var(--grey);
+  padding: 1.5rem .5rem .5rem .5rem;
+  width: 100%;
+  &:focus { outline: none; }
+  &::placeholder { color: var(--grey); }
+}
+@mixin input-label {
+  position: absolute;
+  top: .5rem;
+  left: .5rem;
+  color: var(--grey);
+  font-size: .75rem;
+}
 .name {
   position: relative;
   label {
-    position: absolute;
-    top: .5rem;
-    left: .5rem;
-    color: var(--grey);
-    font-size: .75rem;
-
+    @include input-label
   }
   input {
-    border: none;
-    background: var(--black);
-    border-bottom: 1px solid var(--grey);
-    color: var(--white);
-    font-size: 1rem;
-    font-family: var(--font);
-    padding: 1.5rem .5rem .5rem .5rem;
-    width: 100%;
-    &:focus { outline: none; }
-    &::placeholder { color: var(--grey); }
+    @include input;
   }
 }
 .desc {
@@ -294,26 +306,12 @@ x {
   flex-direction: column;
   position: relative;
   label {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-    color: var(--grey);
-    z-index: 6;
-    font-size: .75rem;
+    @include input-label
   }
   textarea {
-    width: 100%;
+    @include input;
     resize: none;
-    background: var(--black);
-    border: none;
-    border-bottom: 1px solid var(--grey);
-    color: var(--white);
-    font-size: 1rem;
-    font-family: var(--font);
     flex-grow: 1;
-    padding: 1.5rem .5rem .5rem .5rem;
-    &:focus { outline: none; }
-    &::placeholder { color: var(--grey); }
   }
 }
 
@@ -322,7 +320,11 @@ x {
   position: fixed;
   color: var(--white);
   &:hover {color: var(--grey);}
-  z-index: 5;
+  top: 50%;
+  @media screen and (max-width: 500px) {
+    top: unset;
+    bottom: 1em;
+  }
 }
 .prev {left: 1em;}
 .next {right: 1em;}

@@ -1,23 +1,41 @@
 <script>
   import {getContext} from 'svelte'
+  import debounce from 'lodash/debounce'
 
   import Character from '../parts/characters/Character.svelte'
 
   let characters = getContext('characters')
 
-  let opened = ''
+  let opened = null
 
-  let handleOpen = (val) => { opened = val }
+  let handleOpen = debounce((val) => { 
+    if (val >= $characters.length) val = 0
+    else if (val < 0) val = $characters.length - 1
+    
+    console.log(`Opened: ${opened}`)
+    console.log(`Val: ${val}`)
+    console.log(`Character: ${$characters[val]}`)
+
+
+    if (
+        typeof opened === 'number' 
+        && typeof val === 'number' 
+        && $characters[val]
+      ) {
+      let el = document.querySelector(`#${$characters[val].id}`).getBoundingClientRect()
+      window.scrollBy({top: el.top - el.height, behavior: 'smooth'})
+    }
+    opened = val 
+  })
 </script>
 
 <div>
   <characters>
     {#each $characters as char, index }
       <Character 
-        {char} 
-        prev={$characters[index-1] ? $characters[index-1].id : null} 
-        next={$characters[index+1] ? $characters[index+1].id : null} 
+        {char}
         {opened}
+        {index}
         {handleOpen}
       />
     {/each}
