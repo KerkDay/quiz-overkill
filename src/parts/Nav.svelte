@@ -58,6 +58,7 @@
     height: 3rem;
     left: 0; top: 0; right: 0;
     background: black;
+    z-index: 5;
   }
   nav {
     @include top-bar;
