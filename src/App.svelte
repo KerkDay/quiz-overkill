@@ -84,13 +84,10 @@
 <style lang="scss">
 	main {
 		text-align: center;
-		padding: 3.5rem .5rem;
+		padding: 3.5rem .5rem .5rem;
 		min-height: 100vh;
 	}
 
 	@media (max-width: 500px) {
-		main {
-			padding: .5rem;
-		}
 	}
 </style>
