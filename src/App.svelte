@@ -10,6 +10,7 @@
 	import Options from './tabs/Options.svelte'
 	import Characters from './tabs/Characters.svelte'
 	import Questions from './tabs/Questions.svelte'
+	import Nav from './parts/Nav.svelte'
 
 	// Import Stores
 	import { optStore, charStore, qStore } from './stores.js'
@@ -28,8 +29,8 @@
 	// What is the current tab?
 	let currentTab = null
 
-	const setCurrentTab = (num) => {
-		if (typeof num === 'number') currentTab = tabs[num]
+	const setCurrentTab = (tab) => {
+		if (typeof tab === 'number') currentTab = tabs[tab]
 		else currentTab = null
 	}
 
@@ -75,21 +76,21 @@
 	{#if currentTab === null}
 		<Start {setCurrentTab} />
 	{:else}
-		<h1>{currentTab.title}</h1>
+		<Nav {setCurrentTab} {tabs} {currentTab} />
 		<svelte:component this={currentTab.comp} />
 	{/if}
 </main>
 
-<style lang="sass">
-	main
-		text-align: center
-		padding: 1em
-		margin: 0 auto
-		box-sizing: border-box
-		max-width: 100vw
+<style lang="scss">
+	main {
+		text-align: center;
+		padding: 3.5rem .5rem;
+		min-height: 100vh;
+	}
 
-	@media (max-width: 640px) 
-		main 
-			max-width: none
-			padding: .5em
+	@media (max-width: 500px) {
+		main {
+			padding: .5rem;
+		}
+	}
 </style>
