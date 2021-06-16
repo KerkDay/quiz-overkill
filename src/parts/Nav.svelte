@@ -10,7 +10,7 @@
   if (window.innerWidth > 500) opened = true
 
   let handleClickTab = (e) => {
-    opened = false
+    if (window.innerWidth <= 500) opened = false
     setCurrentTab(e)
   }
 
@@ -35,7 +35,7 @@
     <div id='nav-tabs'>
       {#each tabs as tab, index}
         <div class='tab' on:click={() => handleClickTab(index)} tab-index='0'>
-          <div class={`${currentTab == index ? 'current-tab' : 'title'}`} >
+          <div class={`${currentTab == tab ? 'current-tab' : 'title'}`} >
             {tab.title}
           </div>
         </div>
