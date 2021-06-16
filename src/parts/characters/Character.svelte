@@ -32,7 +32,6 @@
   async function handleUploadImg(input) {
     let img = input.target.files[0]
     if (/image\/*/g.test(img.type)) {
-      
 
       try {
         const compressedImg = await imageCompression(img, {
@@ -47,11 +46,18 @@
 
 	document.addEventListener('keydown', debounce((e) => {
     if (opened === index) {
-      if ( e.key === 'ArrowLeft' ) {
+      
+      // Don't move foward or back if
+      let inputs = document.querySelectorAll(`#${char.id} textarea, ${char.id} input`)
+      for (let input of inputs)
+        if (input === document.activeElement) return
+
+      // Check for appropriate keys
+      if ( e.key === 'ArrowLeft' )
         handleOpen(index-1)
-      } else if ( e.key === 'ArrowRight') {
+      else if ( e.key === 'ArrowRight')
         handleOpen(index+1)
-      }
+
     }
 	}))
 
