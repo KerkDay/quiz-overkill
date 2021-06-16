@@ -1,8 +1,11 @@
 <script>
+  /**
+   * @author Kerk Day
+   */
   import {getContext} from 'svelte'
   import debounce from 'lodash/debounce'
   import SvgIcon from '@jamescoyle/svelte-icon'
-  import { mdiAccountPlus  } from '@mdi/js'
+  import { mdiAccountPlus, mdiImageMultiple  } from '@mdi/js'
   import imageCompression from 'browser-image-compression'
 
   import Character from '../parts/characters/Character.svelte'
@@ -12,21 +15,23 @@
 
   let idChars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz🧙']
 
+  /**
+   * A function to charcge which characters modal is showing.
+   * @param val Which character should be opened?
+   */
   let handleOpen = debounce((val) => { 
-    if (val >= $characters.length) val = 0
-    else if (val < 0) val = $characters.length - 1
-    if (
-        typeof opened === 'number' 
-        && typeof val === 'number' 
-        && $characters[val]
-      ) {
-      let el = document.querySelector(`#${$characters[val].id}`).getBoundingClientRect()
-      window.scrollBy({top: el.top - el.height, behavior: 'smooth'})
-    }
-    opened = val 
-  })
+      if (val >= $characters.length) val = 0
+      else if (val < 0) val = $characters.length - 1
 
-  function handleNewCharacter(id, name, desc, img) {
+      // If moved via left/right arrows
+      if ( typeof opened === 'number' && typeof val === 'number' && $characters[val] ) {
+        let el = document.querySelector(`#${$characters[val].id}`).getBoundingClientRect()
+        window.scrollBy({top: el.top - (el.height*2), behavior: 'smooth'})
+      }
+      opened = val 
+    })
+
+  function handleNewCharacter({id, name, desc, img}) {
     function randChar() {
       return idChars[ Math.floor( Math.random() * idChars.length ) ]
     }
@@ -45,7 +50,20 @@
       desc: desc ? desc : '',
       img: img ? img : null
     })
-    opened = [$characters.length-1] // Automatically open the new character.
+    $characters = [...$characters]// A cheat to display the new character
+  }
+
+  async function handleImportImages(input) {
+    let files = input.target.files
+    for (let i in files) {
+      let img = await compressImg(files[i])
+      if (img) {
+        handleNewCharacter({
+          name: files[i].name.split('.')[0],
+          img: img
+        })
+      }
+    }
   }
 
   async function compressImg(img) {
@@ -56,12 +74,8 @@
           useWebWorker: true
         })
         return await imageCompression.getDataUrlFromFile(compressedImg)
-      } catch (err) {
-        return
-      }
-    } else {
-      return
-    }
+      } catch (err) { return }
+    } else { return }
   }
 </script>
 
@@ -70,12 +84,20 @@
   <controls>
 
     <!-- New Character -->
-    <button id='new-char-button' on:click={()=>handleNewCharacter()}>
+    <button id='new-char-button' on:click={()=>{
+        handleNewCharacter({}); 
+        handleOpen($characters.length);
+      }}>
       <SvgIcon path={mdiAccountPlus} type='mdi' size='1em' />
       Add Character
     </button>
 
     <!-- Add From Images -->
+    <label>
+      <SvgIcon path={mdiImageMultiple} type='mdi' size='1em' />
+      Add Characters from Images
+      <input type='file' accepts='image/*' multiple hidden on:change={handleImportImages}/>
+    </label>
 
   </controls>
 
@@ -97,7 +119,8 @@
   controls {
     display: block;
     margin-bottom: 1em;
-    button {
+    button, label {
+      display: inline-block;
       font-size: 1rem;
       padding: 1ch .5rem;
       border: none;
@@ -105,6 +128,8 @@
       border-radius: .5rem;
       color: white;
       cursor: pointer;
+      margin: 0 .5ch;
+      &:hover, &:focus { background: var(--black); }
     }
     #new-char-button {
       background: var(--blue);
