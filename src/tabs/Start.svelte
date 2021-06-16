@@ -135,7 +135,7 @@
         <SvgIcon path={mdiFileUpload} type='mdi' size='2em'/>
         <br />
         Load Quiz
-        <input type='file' hidden on:change='{() => handleLoadFile()}'/>
+        <input type='file' accept='.json' hidden on:change='{() => handleLoadFile()}'/>
       </label>
 
     {/if}
@@ -145,6 +145,12 @@
     {/if}
 
   </div>
+
+  <foot>
+    <left>
+      
+    </left>
+  </foot>
 </div>
 
 
@@ -171,9 +177,7 @@
     grid-template-columns: 50% 50%;
     box-shadow: .2em .2em 1em rgba(0,0,0,0.25);
   }
-  .span-2 {
-    grid-column-start: span 2;
-  }
+  .span-2 { grid-column-start: span 2; }
 
   .load-quiz {color: #3f51b5}
   .new-quiz {color: #2e7d32}
@@ -184,9 +188,7 @@
     padding: 1ch .5rem;
     transition: background-color .2s;
     border-radius: 1em; 
-    &:hover {
-      background-color: rgba(0,0,0,0.1);
-    }
+    &:hover { background-color: rgba(0,0,0,0.1); }
   }
 
   .error {
@@ -199,7 +201,7 @@
 
   .loading {
     background: rgb(141, 101, 139);
-    background-image: linear-gradient(45deg, rgb(141, 101, 139), #000, rgb(141, 101, 139)); 
+    background-image: linear-gradient(45deg, rgb(141, 101, 139), white, rgb(141, 101, 139)); 
     background-repeat: no-repeat;
     background-clip: text;
     -webkit-background-clip: text;
@@ -229,5 +231,12 @@
   p {
     width: 30ch;
     @media (max-width: 500px) {width: 100%}
+  }
+
+  foot {
+    position: fixed;
+    bottom: 0; right: 0; left: 0;
+    display: grid;
+    grid-template-columns: repeat(12, auto);
   }
 </style>
