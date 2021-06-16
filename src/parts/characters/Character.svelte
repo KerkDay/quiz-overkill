@@ -158,15 +158,15 @@
 
 <style lang='scss'>
 
-@mixin inset {
-  top: 0; left: 0; right: 0; bottom: 0;
-}
+@mixin inset { top: 0; left: 0; right: 0; bottom: 0; }
 
 character { display: block; }
 
-.img {
-  font-size: .75rem;
-  color: var(--grey);
+.img { 
+  font-size: .75rem; 
+  color: var(--grey); 
+  display: grid;
+  place-items: center;
 }
 
 img {
@@ -182,8 +182,6 @@ img {
   .img {
     width: 7rem;
     height: 7rem;
-    display: grid;
-    place-items: center;
     margin: auto;
     img { border-radius: .5rem; }
   }
@@ -208,8 +206,7 @@ img {
 x {
   pointer-events: none;
   position: fixed;
-  top: .5em;
-  right: 1ch;
+  top: .5em; right: 1ch;
   color: var(--grey);
   font-size: 2rem;
 }
@@ -222,9 +219,6 @@ x {
   grid-gap: 1em;
   @media screen and (max-width: 500px) {grid-template-columns: auto;}
   .img {
-    aspect-ratio: 1 / 1;
-    display: grid;
-    place-items: center;
     padding: .5rem;
     background-color: var(--black);
     position: relative;
