@@ -3,16 +3,13 @@
 	import { quintOut } from 'svelte/easing';
 	import { crossfade, fade } from 'svelte/transition';
 
-  // Image Compression 
-  import imageCompression from 'browser-image-compression'
-
   // Components
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { mdiArrowLeftCircle, mdiArrowRightCircle, mdiImagePlus, mdiImageRemove, mdiAccountQuestion  } from '@mdi/js'
   import debounce from 'lodash/debounce'
 
   // Imported Stuff
-  export let char, opened, handleOpen, index
+  export let char, opened, handleOpen, index, compressImg
 
   // Fade between opened/unopened items
   const [send, receive] = crossfade({
@@ -31,17 +28,7 @@
   }
   async function handleUploadImg(input) {
     let img = input.target.files[0]
-    if (/image\/*/g.test(img.type)) {
-
-      try {
-        const compressedImg = await imageCompression(img, {
-          maxWidthOrHeight: 300,
-          useWebWorker: true
-        })
-        char.img = await imageCompression.getDataUrlFromFile(compressedImg)
-      } catch (err) {
-      }
-    }
+    char.img = await compressImg(img)
   }
 
 	document.addEventListener('keydown', debounce((e) => {
@@ -216,7 +203,7 @@ img {
   place-items: center;
   position: fixed;
   @include inset;
-  &:last-of-type {background: rgba(0,0,0,0.9);}
+  &:last-of-type {background: rgba(0,0,0,0.9); z-index: 5;}
 }
 x {
   pointer-events: none;
