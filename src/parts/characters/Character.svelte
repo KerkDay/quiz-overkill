@@ -1,7 +1,7 @@
 <script>
   // Svelte Stuff
-	import { quintOut } from 'svelte/easing';
-	import { crossfade, fade } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing'
+	import { crossfade, fade } from 'svelte/transition'
 
   // Components
   import SvgIcon from '@jamescoyle/svelte-icon'
