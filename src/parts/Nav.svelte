@@ -54,7 +54,7 @@
   @mixin top-bar {
     position: fixed;
     padding: .5rem;
-    font-size: 2rem;
+    font-size: 1.5rem;
     height: 3rem;
     left: 0; top: 0; right: 0;
     background: black;
@@ -75,9 +75,11 @@
   .tab {
     margin: 0 2ch;
     cursor: pointer;
+    color: var(--grey);
   }
   .current-tab {
     font-weight: bold;
+    color: var(--white);
   }
 
   #nav-mobile {
