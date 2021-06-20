@@ -6,7 +6,7 @@
   import debounce from 'lodash/debounce'
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { mdiAccountPlus, mdiImageMultiple  } from '@mdi/js'
-  import imageCompression from 'browser-image-compression'
+  import imageCompress from '../scripts/imageCompress'
 
   import Character from '../parts/characters/Character.svelte'
 
@@ -56,7 +56,7 @@
   async function handleImportImages(input) {
     let files = input.target.files
     for (let i in files) {
-      let img = await compressImg(files[i])
+      let img = await imageCompress(files[i])
       if (img) {
         handleNewCharacter({
           name: files[i].name.split('.')[0],
@@ -66,17 +66,6 @@
     }
   }
 
-  async function compressImg(img) {
-    if (/image\/*/g.test(img.type)) {
-      try {
-        const compressedImg = await imageCompression(img, {
-          maxWidthOrHeight: 300,
-          useWebWorker: true
-        })
-        return await imageCompression.getDataUrlFromFile(compressedImg)
-      } catch (err) { return }
-    } else { return }
-  }
 </script>
 
 <div>
@@ -109,7 +98,6 @@
         {opened}
         {index}
         {handleOpen}
-        {compressImg}
       />
     {/each}
   </characters>

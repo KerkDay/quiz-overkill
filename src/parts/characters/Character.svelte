@@ -7,9 +7,11 @@
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { mdiArrowLeftCircle, mdiArrowRightCircle, mdiImagePlus, mdiImageRemove, mdiAccountQuestion  } from '@mdi/js'
   import debounce from 'lodash/debounce'
+  
+  import imageCompress from '../../scripts/imageCompress'
 
   // Imported Stuff
-  export let char, opened, handleOpen, index, compressImg
+  export let char, opened, handleOpen, index
 
   // Fade between opened/unopened items
   const [send, receive] = crossfade({
@@ -28,7 +30,7 @@
   }
   async function handleUploadImg(input) {
     let img = input.target.files[0]
-    char.img = await compressImg(img)
+    char.img = await imageCompress(img)
   }
 
 	document.addEventListener('keydown', debounce((e) => {
