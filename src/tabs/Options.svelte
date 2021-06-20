@@ -9,6 +9,10 @@
   let questions = getContext('questions')
   let numQuestions = $questions.length
 
+  onMount(() => {
+    questions = null
+  })
+
   async function handleWelcomeImg(e) {
     let img = await imageCompress(e.target.files[0])
     if (img) $options.welcomeImg = img
@@ -66,7 +70,7 @@
 
 </sect>
 
-<sect>
+<sect transition:fly>
   <!-- Question Selection -->
   <label>
     <optname>
@@ -148,7 +152,7 @@
     margin: .5em 0;
     border-radius: .25rem;
     justify-content: left;
-    align-items: center;
+    align-items: flex-start;
     &:hover, &:focus-within { background: var(--black); }
   }
   .control { 
