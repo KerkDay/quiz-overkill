@@ -48,7 +48,8 @@
       id: id,
       name: name ? name: '',
       desc: desc ? desc : '',
-      img: img ? img : null
+      img: img ? img : null,
+      imgType: null
     })
     $characters = [...$characters]// A cheat to display the new character
   }
@@ -75,7 +76,7 @@
     <!-- New Character -->
     <button id='new-char-button' on:click={()=>{
         handleNewCharacter({}); 
-        handleOpen($characters.length);
+        handleOpen($characters.length-1);
       }}>
       <SvgIcon path={mdiAccountPlus} type='mdi' size='1em' />
       Add Character

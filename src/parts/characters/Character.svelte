@@ -10,6 +10,8 @@
   
   import imageCompress from '../../scripts/imageCompress'
 
+  import Img from '../Img.svelte'
+
   // Imported Stuff
   export let char, opened, handleOpen, index
 
@@ -30,7 +32,12 @@
   }
   async function handleUploadImg(input) {
     let img = input.target.files[0]
-    char.img = await imageCompress(img)
+    let data = await imageCompress(img)
+    console.log(`[Image Compress Data] ${JSON.stringify(data)}`)
+    if (data && data.type && data.url) {
+      char.imgType = data.type
+      char.img = data.url
+    }
   }
 
 	document.addEventListener('keydown', debounce((e) => {
@@ -62,17 +69,7 @@
     out:send="{{key: char.id}}"
   >
     <!-- Image -->
-    <div class='img'>
-      {#if char.img}
-        <img src='{char.img ? char.img : ''}' alt='{char.name}'/>
-      {:else}
-        <div class='default-img'>
-          <SvgIcon path={mdiAccountQuestion} type='mdi' size='2em'/>
-          <br />
-          No Image
-        </div>
-      {/if}
-    </div>
+    <Img img={char.img} alt={char.name} imgType={char.imgType} pos="thumb"/>
 
     <!-- Desc -->
     <div>
@@ -93,16 +90,7 @@
           <left>
             <!-- Image -->
             <button class='img'>
-              {#if char.img}
-                <img src='{char.img ? char.img : ''}' alt='{char.name}'/>
-              {:else}
-                <div class='default-img'>
-                  <SvgIcon path={mdiAccountQuestion} type='mdi' size='2em'/>
-                  <br />
-                  No Image
-                </div>
-              {/if}
-              
+              <Img img={char.img} alt={char.name} imgType={char.imgType} pos="modal"/>
               
               <div class='overlay'>
                 <label class='change-img'>
@@ -164,36 +152,15 @@
 
 character { display: block; }
 
-.img { 
-  font-size: .75rem; 
-  color: var(--grey); 
-  display: grid;
-  place-items: center;
-}
-
-img {
-  display: block;
-  width: 100%; height: 100%;
-  object-fit: cover;
-}
-
 .thumb {
   background: black;
   border-radius: .5rem;
   padding: .5rem;
-  .img {
-    width: 7rem;
-    height: 7rem;
-    margin: auto;
-    img { border-radius: .5rem; }
-  }
 }
 
 @media screen and (max-width: 500px) {
   .thumb {
     border-radius: .25rem; padding: .25rem;
-    .img {width: 5rem; height: 5rem; }
-    img {border-radius: .25rem;}
   }
 }
 
@@ -231,10 +198,6 @@ x {
       outline: none;
       .overlay { opacity: 1; }
       .change-img, .remove-img { pointer-events: auto !important;}
-    }
-    img {
-      object-fit: contain;
-      width: 15rem; height: 15rem;
     }
     .overlay {
       position: absolute;
