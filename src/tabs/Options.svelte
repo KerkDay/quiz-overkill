@@ -15,7 +15,7 @@
 
   async function handleWelcomeImg(e) {
     let img = await imageCompress(e.target.files[0])
-    if (img) $options.welcomeImg = img
+    if (img) {$options.welcomeImg = img}
   }
 </script>
 
