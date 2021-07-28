@@ -31,12 +31,17 @@
     char.img = null
   }
   async function handleUploadImg(input) {
+    document.activeElement.blur()
     let img = input.target.files[0]
+    let oldType = char.imgType
+    char.imgType = 'loading'
     let data = await imageCompress(img)
     console.log(`[Image Compress Data] ${JSON.stringify(data)}`)
     if (data && data.type && data.url) {
       char.imgType = data.type
       char.img = data.url
+    } else {
+      char.imgType = oldType
     }
   }
 
@@ -108,20 +113,18 @@
             </button>
 
             <!-- Name -->
-            <div class='name'>
-              <!-- svelte-ignore a11y-label-has-associated-control -->
-              <label>Name</label>
+            <label class='name'>
+              <optname>Name</optname>
               <input type='text' maxLength='30' placeholder='Nobody' bind:value={char.name}/>
-            </div>
+            </label>
           </left>
 
           <right>
             <!-- Description -->
-            <div class='desc'>
-              <!-- svelte-ignore a11y-label-has-associated-control -->
-              <label>Description</label>
+            <label class='desc'>
+              <optname>Description</optname>
               <textarea placeholder='Descriptionless' bind:value={char.desc}></textarea>
-            </div>
+            </label>
             
           </right>
       </div>
@@ -243,28 +246,19 @@ x {
   color: var(--grey);
   font-size: .75rem;
 }
-.name {
+.name, .desc {
   position: relative;
-  label {
+  display: block;
+  optname {
     @include input-label
   }
-  input {
-    @include input;
-  }
-}
-.desc {
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  position: relative;
-  label {
-    @include input-label
-  }
-  textarea {
+  input, textarea {
     @include input;
     resize: none;
-    flex-grow: 1;
   }
+}
+.desc textarea {
+  height: 19.2em;
 }
 
 .prev, .next {
