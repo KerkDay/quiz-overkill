@@ -71,11 +71,15 @@
           name: files[i].name.split('.')[0],
           imgType: 'loading'
         })
-        let data = await imageCompress(files[i])
-        if (data && data.url && data.type) {
-          $characters[index].img = data.url
-          $characters[index].imgType = data.type
-        } else {
+        try {
+          let data = await imageCompress(files[i])
+          if (data && data.url && data.type) {
+            $characters[index].img = data.url
+            $characters[index].imgType = data.type
+          } else {
+            throw 'FFMpeg has failed.'
+          }
+        } catch(e) {
           $characters.splice(index, 1)
           $characters = [...$characters]
         }
@@ -85,7 +89,7 @@
 
 </script>
 
-<div style="position:relative;">
+<div style="position:relative;" >
   <!-- Controls -->
   <controls>
 

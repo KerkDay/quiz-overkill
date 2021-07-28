@@ -32,17 +32,18 @@
   }
   async function handleUploadImg(input) {
     document.activeElement.blur()
-    let img = input.target.files[0]
-    let oldType = char.imgType
-    char.imgType = 'loading'
-    let data = await imageCompress(img)
-    console.log(`[Image Compress Data] ${JSON.stringify(data)}`)
-    if (data && data.type && data.url) {
-      char.imgType = data.type
-      char.img = data.url
-    } else {
-      char.imgType = oldType
-    }
+    try {
+      let img = input.target.files[0]
+      let oldType = char.imgType
+      char.imgType = 'loading'
+      let data = await imageCompress(img)
+      console.log(`[Image Compress Data] ${JSON.stringify(data)}`)
+      if (data && data.type && data.url) {
+        char.imgType = data.type
+        char.img = data.url
+      } else { char.imgType = oldType }
+    } catch (e) { char.imgType = oldType }
+    
   }
 
 	document.addEventListener('keydown', debounce((e) => {
