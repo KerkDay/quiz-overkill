@@ -4,6 +4,7 @@
   import imageCompress from '../scripts/imageCompress'
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { mdiImageRemove, mdiImagePlus, mdiRobot } from '@mdi/js'
+  import Img from '../parts/Img.svelte'
   
   let options = getContext('options')
   let questions = getContext('questions')
@@ -14,8 +15,11 @@
   })
 
   async function handleWelcomeImg(e) {
-    let img = await imageCompress(e.target.files[0])
-    if (img) {$options.welcomeImg = img}
+    let data = await imageCompress(e.target.files[0])
+    if (data) {
+      $options.welcomeImg = data.url
+      $options.welcomeImgType = data.type
+    }
   }
 </script>
 
@@ -36,17 +40,9 @@
   <!-- Welcome Img -->
   <label>
     <optname>Welcome Image:</optname>
-    {#if $options.welcomeImg}
-      <img class='welcome-img' src={$options.welcomeImg} alt={$options.title}/>
-    {:else}
-      <div style='color:var(--grey);flex-grow:1;display:grid;place-items:center;height:10rem;'>
-        <div style='text-align:center;'>
-          <SvgIcon path={mdiImageRemove} type='mdi' size='2em'/>
-          <br />
-          No Image
-        </div>
-      </div>
-    {/if}
+    <Img img={$options.welcomeImg} 
+      alt="Welcome Image" icon={mdiImageRemove} 
+      pos="welcome" imgType={$options.welcomeImgType} />
     <input type='file' hidden accept='image/*' on:change={handleWelcomeImg} />
   </label>
 
@@ -187,15 +183,9 @@
     color: var(--grey);
     max-width: 15ch;
   }
-  input[type='checkbox'], input[type='radio'] {
+  input[type='checkbox'] {
     margin-right: 1ch;
   }
 
 
-  .welcome-img {
-    display: block;
-    flex-grow: 1;
-    height: 10rem;
-    object-fit: contain;
-  }
 </style>
