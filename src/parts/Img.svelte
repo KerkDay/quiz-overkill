@@ -13,7 +13,8 @@
    */
 
   import SvgIcon from '@jamescoyle/svelte-icon'
-  import { mdiAccountQuestion } from '@mdi/js'
+  import { mdiAccountQuestion, mdiLoading } from '@mdi/js'
+  import { fade } from 'svelte/transition';
 
   export let img, 
     alt = "", 
@@ -31,16 +32,24 @@
 </script>
 
 <div class='img {pos}'>
-  {#if img && imgType && imgType==='image'}
-    <img src='{img}' alt='{alt}'/>
+  {#if imgType === 'loading'}
+    <div transition:fade class='default-img' >
+      <span class='loading'>
+        <SvgIcon path={mdiLoading} type='mdi' size='2em'/>
+      </span>
+      <br />
+      Loading
+    </div>
+  {:else if img && imgType && imgType==='image'}
+    <img transition:fade src='{img}' alt='{alt}'/>
   {:else if img && imgType && imgType==='video' }
-    <video autoplay loop={checkLoop()}>
+    <video transition:fade autoplay loop={checkLoop()}>
       <source src='{img}' type="video/mp4">
       <track kind="captions">
       Your browser doesn't support videos.
     </video>
   {:else}
-    <div class='default-img'>
+    <div transition:fade class='default-img'>
       <SvgIcon path={icon} type='mdi' size='2em'/>
       <br />
       No Image
@@ -54,12 +63,16 @@
   color: var(--grey); 
   display: grid;
   place-items: center;
+  width: 100%;
+  position: relative;
 }
 
 img, video {
   display: block;
+  position: absolute;
+  left: 0; right: 0;
+  top: 0; bottom: 0;
   width: 100%; height: 100%;
-  overflow: auto;
   object-fit: cover;
 }
 
@@ -75,6 +88,17 @@ img, video {
   }
 }
 
+@keyframes spinner {
+  from {transform: rotateZ(0deg)}
+  to {transform: rotateZ(360deg)}
+}
+.default-img {
+  text-align: center;
+}
+.loading{
+  display: block;
+  animation: spinner 1s ease-in-out infinite;
+}
 .modal {
   width: 15rem; height: 15rem;
   img, video{
@@ -83,11 +107,11 @@ img, video {
 }
 
 .welcome {
-  img video {
-
+  
+  height: 10rem;
+  img, video {
     display: block;
     flex-grow: 1;
-    height: 10rem;
     object-fit: contain;
   }
 }
