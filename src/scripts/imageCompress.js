@@ -1,7 +1,8 @@
 import imageCompression from 'browser-image-compression'
+import randomColor from 'randomcolor';
 
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
-const ffmpeg = createFFmpeg();
+const ffmpeg = createFFmpeg({log: true});
 
 export default async function compressImg(img, size = 300) {
   if (img) {
@@ -18,20 +19,23 @@ export default async function compressImg(img, size = 300) {
   
             h = h%2 === 0 ? h : h+1
             w = w%2 === 0 ? w : w+1
-  
-            resolve({w, h}) 
+            let ow = this.width, oh = this.height
+            resolve({w, h, ow, oh}) 
           }
           i.src = URL.createObjectURL(img)
         })
-        let {w, h} = await promise
-        console.log(`[GIF Image Size] ${w} x ${h}`)
+        let {w, h, oh, ow} = await promise
+        let color = randomColor().replace('#', '').toUpperCase();
   
         ffmpeg.isLoaded() ? "" : await ffmpeg.load();
         ffmpeg.FS('writeFile', 'convert.gif', await fetchFile(img))
   
         await ffmpeg.run(
+          '-f', 'lavfi',
+          '-i', `color=c=0x${color}:s=${ow}x${oh}`,
           '-i', 'convert.gif', 
-          '-vf', `scale=${w}:${h}`, 
+          '-shortest',
+          '-filter_complex', `[0:v][1:v]overlay=shortest=1,scale=${w}:${h}`,
           '-pix_fmt', 'yuv420p', 
           '-f', 'mp4', 
           'out.mp4'

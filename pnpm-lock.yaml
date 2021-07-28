@@ -11,6 +11,7 @@ specifiers:
   file-saver: ^2.0.5
   lodash: ^4.17.21
   pug: ^3.0.2
+  randomcolor: ^0.6.2
   sass: ^1.36.0
   svelte: ^3.41.0
   svelte-check: ^2.2.3
@@ -28,6 +29,7 @@ dependencies:
   browser-image-compression: 1.0.14
   file-saver: 2.0.5
   lodash: 4.17.21
+  randomcolor: 0.6.2
 
 devDependencies:
   '@sveltejs/vite-plugin-svelte': 1.0.0-next.14_svelte@3.41.0+vite@2.4.4
@@ -646,6 +648,10 @@ packages:
       pug-runtime: 3.0.1
       pug-strip-comments: 2.0.0
     dev: true
+
+  /randomcolor/0.6.2:
+    resolution: {integrity: sha512-Mn6TbyYpFgwFuQ8KJKqf3bqqY9O1y37/0jgSK/61PUxV4QfIMv0+K2ioq8DfOjkBslcjwSzRfIDEXfzA9aCx7A==}
+    dev: false
 
   /readdirp/3.6.0:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
