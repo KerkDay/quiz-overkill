@@ -12,8 +12,11 @@
 
   let characters = getContext('characters')
   let opened = null
+  let shadow = false
 
-
+  document.addEventListener('scroll', () => {
+    shadow = window.scrollY > 0
+  })
 
   /**
    * A function to charcge which characters modal is showing.
@@ -91,7 +94,7 @@
 
 <div style="position:relative;" >
   <!-- Controls -->
-  <controls>
+  <controls class:shadow="{shadow}">
 
     <!-- New Character -->
     <button id='new-char-button' on:click={()=>{
@@ -149,6 +152,10 @@
     #new-char-button {
       background: var(--blue);
     }
+  }
+  .shadow {
+    transition: box-shadow .5s;
+    box-shadow: 0 0 1rem rgba(0,0,0,0.5);
   }
   characters {
     display: grid;
