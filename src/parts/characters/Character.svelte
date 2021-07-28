@@ -252,13 +252,14 @@ x {
   optname {
     @include input-label
   }
-  input, textarea {
-    @include input;
-    resize: none;
-  }
+}
+.name input {
+  @include input;
 }
 .desc textarea {
+  @include input;
   height: 19.2em;
+  resize: none;
 }
 
 .prev, .next {
