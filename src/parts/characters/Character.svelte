@@ -159,13 +159,11 @@ character { display: block; }
   background: black;
   border-radius: .5rem;
   padding: .5rem;
-}
-
-@media screen and (max-width: 500px) {
-  .thumb {
+  @media screen and (max-width: 500px) {
     border-radius: .25rem; padding: .25rem;
   }
 }
+
 
 
 .modal-outer {
