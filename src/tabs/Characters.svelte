@@ -31,7 +31,7 @@
       opened = val 
     })
 
-  function handleNewCharacter({id, name, desc, img}) {
+  function handleNewCharacter({id, name, desc, img, imgType}) {
     function randChar() {
       return idChars[ Math.floor( Math.random() * idChars.length ) ]
     }
@@ -49,7 +49,7 @@
       name: name ? name: '',
       desc: desc ? desc : '',
       img: img ? img : null,
-      imgType: null
+      imgType: imgType ? imgType : null
     })
     $characters = [...$characters]// A cheat to display the new character
   }
@@ -57,11 +57,13 @@
   async function handleImportImages(input) {
     let files = input.target.files
     for (let i in files) {
-      let img = await imageCompress(files[i])
-      if (img) {
+      let data = await imageCompress(files[i])
+      if (data && data.url && data.type) {
+        console.log(`[New Character Data] ${JSON.stringify(data)}`)
         handleNewCharacter({
           name: files[i].name.split('.')[0],
-          img: img
+          img: data.url,
+          imgType: data.type
         })
       }
     }
@@ -86,7 +88,7 @@
     <label>
       <SvgIcon path={mdiImageMultiple} type='mdi' size='1em' />
       Add Characters from Images
-      <input type='file' accepts='image/*' multiple hidden on:change={handleImportImages}/>
+      <input type='file' accept='image/*' multiple hidden on:change={handleImportImages}/>
     </label>
 
   </controls>
