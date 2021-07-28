@@ -38,30 +38,27 @@
   </label>
 
   <!-- Welcome Img -->
-  <label>
-    <optname>Welcome Image:</optname>
+  <div class='control'>
+    <optname>
+      Welcome Image:
+      <!-- Upload Image -->
+      <label class="sm-btn" style='color: var(--green);' tabindex='0'>
+        <SvgIcon path={mdiImagePlus} type='mdi' size='1em'/>
+        <span>Upload</span>
+        <input type='file' hidden accept='image/*' on:change={handleWelcomeImg} />
+      </label>
+      <!-- Remove Image -->
+      <div class='control sm-btn' style='color: var(--red);' on:click={()=>{$options.welcomeImg = null}} tabindex='0'>
+        <SvgIcon path={mdiImageRemove} type='mdi' size='1em'/>
+        <span>Remove</span>
+      </div>
+    </optname>
+
     <Img img={$options.welcomeImg} 
       alt="Welcome Image" icon={mdiImageRemove} 
       pos="welcome" imgType={$options.welcomeImgType} />
     <input type='file' hidden accept='image/*' on:change={handleWelcomeImg} />
-  </label>
-
-
-  <!-- Image Controls -->
-  <controls>
-    <!-- Upload Image -->
-    <label style='color: var(--green);text-align:center;' tabindex='0'>
-      <SvgIcon path={mdiImagePlus} type='mdi' size='1em'/>
-      <span style='margin-left:.5ch'>Upload Image</span>
-      <input type='file' hidden accept='image/*' on:change={handleWelcomeImg} />
-    </label>
-
-    <!-- Remove Image -->
-    <div style='color: var(--red);text-align:center;' class='control' on:click={()=>{$options.welcomeImg = null}} tabindex='0'>
-      <SvgIcon path={mdiImageRemove} type='mdi' size='1em'/>
-      <span style='margin-left:.5ch'>Remove Image</span>
-    </div>
-  </controls>
+  </div>
 
 
 </sect>
@@ -151,9 +148,6 @@
     align-items: flex-start;
     &:hover, &:focus-within { background: var(--black); }
   }
-  .control { 
-    cursor: pointer;
-  }
   controls {
     display: flex;
     flex-direction: row;
@@ -164,6 +158,28 @@
     font-weight: 300;
     color: var(--white);
     text-align: right;
+    width: 15ch;
+    @media (max-width: 500px) { width: 10ch; }
+  }
+  .sm-btn {
+    font-size: .90rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: .5em 0;
+    margin: 0;
+    display: block;
+    text-align: right;
+    @media (max-width: 500px) { 
+      font-size: 1rem; 
+      text-align: center 
+    }
+    svg {margin-right:.25ch}
+    span {
+      @media (max-width: 500px) { 
+        display: block;
+        width: 100%;
+       }
+    }
   }
   input:not([type='checkbox'], [type='radio']), textarea, select {
     border: none;
