@@ -35,14 +35,14 @@
 	box-sizing: border-box
 }
 
-body {
+html, body {
 	background: var(--back);
 	padding: 0; margin: 0;
+	scroll-behavior: smooth;
 }
 
 @media screen and (max-width: 576px) {
 	:root {
 		--ideal-width: 100%;
-		font-size: 16px;
 	}
 }
