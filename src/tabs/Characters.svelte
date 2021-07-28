@@ -13,35 +13,42 @@
   let characters = getContext('characters')
   let opened = null
 
-  let idChars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz🧙']
+
 
   /**
    * A function to charcge which characters modal is showing.
    * @param val Which character should be opened?
    */
   let handleOpen = debounce((val) => { 
-      if (val >= $characters.length) val = 0
-      else if (val < 0) val = $characters.length - 1
+    if (val >= $characters.length) val = 0
+    else if (val < 0) val = $characters.length - 1
 
-      // If moved via left/right arrows
-      if ( typeof opened === 'number' && typeof val === 'number' && $characters[val] ) {
-        let el = document.querySelector(`#${$characters[val].id}`).getBoundingClientRect()
-        window.scrollBy({top: el.top - (el.height*2), behavior: 'smooth'})
-      }
-      opened = val 
-    })
+    // If moved via left/right arrows, scroll to them
+    if ( typeof opened === 'number' && typeof val === 'number' && $characters[val] ) {
+      scrollTo(val)
+    }
+    opened = val 
+  })
+
+  /**
+   * Scroll down to a specific character
+   * @param val {string/number} Either the ID or the index of the character you want to scroll down to
+   */
+  let scrollTo = debounce((val) => {
+    let selector = typeof val === 'string' ? val : $characters[val].id
+    let el = document.querySelector(`#${selector}`).getBoundingClientRect()
+    window.scrollBy({top: el.top - (el.height*2), behavior: 'smooth'})
+  })
 
   function handleNewCharacter({id, name, desc, img, imgType}) {
+    let idChars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz🧙']
     function randChar() {
       return idChars[ Math.floor( Math.random() * idChars.length ) ]
     }
-    // This function runs recursively. Seems reckless maybe?
-    // Make the ID required, and check it against all the characters
-    function makeID() {
-      id = randChar() + randChar()
-      for (let char in $characters) {
-        if (char.id === id) makeID()
-      }
+    function makeID(num = 3) {
+      id = ""
+      for(let i=num; num>0; num--) { id += randChar() }
+      for (let char in $characters) { if (char.id === id) makeID(num) }
     }
     if (typeof id === 'undefined') makeID()
     $characters.push({
@@ -51,27 +58,34 @@
       img: img ? img : null,
       imgType: imgType ? imgType : null
     })
-    $characters = [...$characters]// A cheat to display the new character
+    $characters = [...$characters] // A cheat to display the new character
+    scrollTo(id)
+    return {id: id, index: $characters.length-1}
   }
 
   async function handleImportImages(input) {
     let files = input.target.files
     for (let i in files) {
-      let data = await imageCompress(files[i])
-      if (data && data.url && data.type) {
-        console.log(`[New Character Data] ${JSON.stringify(data)}`)
-        handleNewCharacter({
+      if (files[i].name && /image\/*/g.test(files[i].type)) {
+        let {id, index} = handleNewCharacter({
           name: files[i].name.split('.')[0],
-          img: data.url,
-          imgType: data.type
+          imgType: 'loading'
         })
+        let data = await imageCompress(files[i])
+        if (data && data.url && data.type) {
+          $characters[index].img = data.url
+          $characters[index].imgType = data.type
+        } else {
+          $characters.splice(index, 1)
+          $characters = [...$characters]
+        }
       }
     }
   }
 
 </script>
 
-<div>
+<div style="position:relative;">
   <!-- Controls -->
   <controls>
 
@@ -109,7 +123,13 @@
 <style lang='scss'>
   controls {
     display: block;
-    margin-bottom: 1em;
+    position: fixed;
+    left: 0;
+    top: 3rem;
+    right: 0;
+    padding: .5rem;
+    background: var(--back);
+    z-index: 5;
     button, label {
       display: inline-block;
       font-size: 1rem;
@@ -131,6 +151,7 @@
     grid-template-columns: repeat(auto-fit, minmax(8em, 8em));
     grid-gap: 1rem;
     max-width: 1920px;
+    padding-top: 4em;
     margin: auto;
     justify-content: center;
     @media screen and (max-width:500px) {
