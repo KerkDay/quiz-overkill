@@ -22,6 +22,19 @@
     pos,
     icon = mdiAccountQuestion
 
+  function playVideo(event) {
+    if (!checkLoop()) {
+      event.target.loop = true
+      event.target.play()
+    }
+  }
+  function stopVideo(event) {
+    if (!checkLoop()) {
+      event.target.loop = checkLoop()
+      event.target.pause()
+    }
+  }
+
   /**
    * Animation loop is based off the images "pos"
    * @returns {boolean} 
@@ -43,7 +56,11 @@
   {:else if img && imgType && imgType==='image'}
     <img transition:fade src='{img}' alt='{alt}'/>
   {:else if img && imgType && imgType==='video' }
-    <video transition:fade autoplay loop={checkLoop()}>
+    <video transition:fade autoplay loop={checkLoop()}
+      on:mouseover={playVideo}
+      on:focus={playVideo}
+      on:mouseleave={stopVideo}
+    >
       <source src='{img}' type="video/mp4">
       <track kind="captions">
       Your browser doesn't support videos.
@@ -88,22 +105,15 @@ img, video {
   }
 }
 
-@keyframes spinner {
-  from {transform: rotateZ(0deg)}
-  to {transform: rotateZ(360deg)}
-}
-.default-img {
-  text-align: center;
-}
+@keyframes spinner { from {transform: rotateZ(0deg)} to {transform: rotateZ(360deg)} }
+.default-img { text-align: center; }
 .loading{
   display: block;
   animation: spinner 1s ease-in-out infinite;
 }
 .modal {
   width: 15rem; height: 15rem;
-  img, video{
-    object-fit: contain;
-  }
+  img, video{ object-fit: contain; }
 }
 
 .welcome {
