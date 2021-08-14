@@ -16,7 +16,7 @@
 	--yellow: #f79617;
 	--white: white;
 	--grey: hsl(300, 6%, 50%);
-	--black: hsl(300, 6%, 10%);
+	--black: #1b181b;
 
 	--color:  var(--white);
 
@@ -25,7 +25,7 @@
 
 
 	/* Sizes */
-	--ideal-width: clamp(40ch, 50%, 75ch);
+	--ideal-width: clamp(40ch, 75%, 75ch);
 
 	/* Breaks */
 	--phone-max: 500px;
