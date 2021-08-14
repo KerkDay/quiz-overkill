@@ -12,14 +12,12 @@ export default async function compressImg(img, size = 300) {
         const promise = new Promise((resolve, reject) => {
           const i = new Image()
           i.onload = function() { 
-            let w = this.width, h = this.height
-            let big = Math.max(w, h)
-            w = Math.floor(w * size/big)
-            h = Math.floor(h * size/big)
-  
+            let ow = this.width, oh = this.height
+            let big = Math.max(ow, oh)
+            let w = Math.floor(ow * size/big)
+            let h = Math.floor(oh * size/big)
             h = h%2 === 0 ? h : h+1
             w = w%2 === 0 ? w : w+1
-            let ow = this.width, oh = this.height
             resolve({w, h, ow, oh}) 
           }
           i.src = URL.createObjectURL(img)
@@ -37,6 +35,7 @@ export default async function compressImg(img, size = 300) {
           '-shortest',
           '-filter_complex', `[0:v][1:v]overlay=shortest=1,scale=${w}:${h}`,
           '-pix_fmt', 'yuv420p', 
+          '-crf', '28',
           '-f', 'mp4', 
           'out.mp4'
         )
