@@ -5,12 +5,13 @@
 
   // Components
   import SvgIcon from '@jamescoyle/svelte-icon'
-  import { mdiArrowLeftCircle, mdiArrowRightCircle, mdiImagePlus, mdiImageRemove, mdiAccountQuestion  } from '@mdi/js'
+  import { mdiImagePlus, mdiImageRemove, mdiAccountRemove, mdiAccountMultiple } from '@mdi/js'
   import debounce from 'lodash/debounce'
   
   import imageCompress from '../../scripts/imageCompress'
 
   import Img from '../Img.svelte'
+  import Modal from '../Modal.svelte'
 
   // Imported Stuff
   export let char, opened, handleOpen, index
@@ -88,61 +89,52 @@
   </div>
 
   {:else}
-    <div class='modal-outer' on:click|self={handleOpen(null)}>
-      <div class='modal-inner'
-        in:receive="{{key: char.id}}"
-        out:send="{{key: char.id}}"
-      >
-          <left>
-            <!-- Image -->
-            <button class='img'>
-              <Img img={char.img} alt={char.name} imgType={char.imgType} pos="modal"/>
-              
-              <div class='overlay'>
-                <label class='change-img'>
-                  <SvgIcon path={mdiImagePlus} type='mdi' size='1em'/>
-                  <span> Upload Image</span>
-                  <input type='file' accept='image/*' hidden on:change={handleUploadImg} />
-                </label>
-                {#if char.img}
-                  <div class='remove-img' on:click={handleRemoveImg}>
-                    <SvgIcon path={mdiImageRemove} type='mdi' size='1em'/>
-                    <span> Remove Image</span>
-                  </div>
-                {/if}
+    <Modal {handleOpen} {index} {send} {receive} >
+      <left>
+        <!-- Image -->
+        <button class='img'>
+          <Img img={char.img} alt={char.name} imgType={char.imgType} pos="modal"/>
+          
+          <div class='overlay'>
+            <label class='change-img'>
+              <SvgIcon path={mdiImagePlus} type='mdi' size='1em'/>
+              <span> Upload Image</span>
+              <input type='file' accept='image/*' hidden on:change={handleUploadImg} />
+            </label>
+            {#if char.img}
+              <div class='remove-img' on:click={handleRemoveImg}>
+                <SvgIcon path={mdiImageRemove} type='mdi' size='1em'/>
+                <span> Remove Image</span>
               </div>
-            </button>
+            {/if}
+          </div>
+        </button>
 
-            <!-- Name -->
-            <label class='name'>
-              <optname>Name</optname>
-              <input type='text' maxLength='30' placeholder='Nobody' bind:value={char.name}/>
-            </label>
-          </left>
+        <!-- Name -->
+        <label class='name'>
+          <optname>Name</optname>
+          <input type='text' maxLength='30' placeholder='Nobody' bind:value={char.name}/>
+        </label>
+      </left>
 
-          <right>
-            <!-- Description -->
-            <label class='desc'>
-              <optname>Description</optname>
-              <textarea placeholder='Descriptionless' bind:value={char.desc}></textarea>
-            </label>
-            
-          </right>
-      </div>
+      <right>
+        <!-- Description -->
+        <label class='desc'>
+          <optname>Description</optname>
+          <textarea placeholder='Descriptionless' bind:value={char.desc}></textarea>
+        </label>
 
-      <!-- Purely Costmetic Close Icon -->
-      <x transition:fade >&times;</x>
-
-      <!-- Previous Item -->
-      <!-- TODO: Doesnt work! -->
-      <div class='prev' on:click={handleOpen(index-1)} transition:fade>
-        <SvgIcon path={mdiArrowLeftCircle} type='mdi' size='2em'/>
-      </div>
-      <!-- Next item -->
-      <div class='next' on:click={handleOpen(index+1)} transition:fade>
-        <SvgIcon path={mdiArrowRightCircle} type='mdi' size='2em'/>
-      </div>
-    </div>
+        <div class="char-btns">
+          <button class='duplicate' data-tooltip="Duplicate this Character">
+            <SvgIcon path={mdiAccountMultiple} type="mdi" size="2em" />
+          </button>
+          <button class='remove'>
+            <SvgIcon path={mdiAccountRemove} type="mdi" size="2em" />
+          </button>
+        </div>
+        
+      </right>
+    </Modal>
 
   {/if}
   
@@ -166,52 +158,28 @@ character { display: block; }
 }
 
 
-
-.modal-outer {
-  display: grid;
-  place-items: center;
-  position: fixed;
-  @include inset;
-  &:last-of-type {background: rgba(0,0,0,0.9); z-index: 5;}
-}
-x {
-  pointer-events: none;
-  position: fixed;
-  top: .5em; right: 1ch;
-  color: var(--grey);
-  font-size: 2rem;
-}
-.modal-inner {
-  display: grid;
-  grid-template-columns: auto auto;
-  border-radius: 1em;
-  transition: all 1s;
-  padding: 1em; margin: 2ch;
-  grid-gap: 1em;
-  @media screen and (max-width: 500px) {grid-template-columns: auto;}
-  .img {
-    padding: .5rem;
-    background-color: var(--black);
-    position: relative;
-    border: 0;
-    width: 100%;
-    min-height: 5em;
-    &:hover, &:focus {
-      outline: none;
-      .overlay { opacity: 1; }
-      .change-img, .remove-img { pointer-events: auto !important;}
-    }
-    .overlay {
-      position: absolute;
-      @include inset;
-      opacity: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      font-size: 1rem;
-      background: rgba(0,0,0,0.75);
-      
-    }
+.img {
+  padding: .5rem;
+  background-color: var(--black);
+  position: relative;
+  border: 0;
+  width: 100%;
+  min-height: 5em;
+  &:hover, &:focus {
+    outline: none;
+    .overlay { opacity: 1; }
+    .change-img, .remove-img { pointer-events: auto !important;}
+  }
+  .overlay {
+    position: absolute;
+    @include inset;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1rem;
+    background: rgba(0,0,0,0.75);
+    
   }
 }
 .change-img { color: var(--blue); }
@@ -227,16 +195,8 @@ x {
 
 
 /* Character Inputs */
-@mixin input {
-  font-family: var(--font); font-size: 1rem;
-  color: var(--white);
-  background: var(--black);
-  border: none;
-  border-bottom: 1px solid var(--grey);
-  padding: 1.5rem .5rem .5rem .5rem;
-  width: 100%;
-  &:focus { outline: none; }
-  &::placeholder { color: var(--grey); }
+input:not([type='checkbox'], [type='radio']), textarea {
+  padding-top: 1.5rem;
 }
 @mixin input-label {
   position: absolute;
@@ -252,27 +212,32 @@ x {
     @include input-label
   }
 }
-.name input {
-  @include input;
-}
-.desc textarea {
-  @include input;
-  height: 19.2em;
-  resize: none;
-}
 
-.prev, .next {
-  display: block;
-  position: fixed;
-  color: var(--white);
-  &:hover {color: var(--grey);}
-  top: 50%;
-  @media screen and (max-width: 500px) {
-    top: unset;
-    bottom: 1em;
+right {
+  display: flex;
+  flex-direction: column;
+  width: 16rem; 
+  .desc { flex-grow: 1; }
+  textarea {
+    height: 100%;
+    resize: none;
+  }
+  .char-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: .5rem;
+    margin-top: .5rem;
+    button {
+      border: none;
+    }
+    .duplicate {
+      background: var(--blue);
+    }
+    .remove {
+      background: var(--red);
+    }
   }
 }
-.prev {left: 1em;}
-.next {right: 1em;}
+
 
 </style>
