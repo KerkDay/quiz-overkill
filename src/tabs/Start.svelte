@@ -7,6 +7,8 @@
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { mdiFileUpload, mdiFilePlus } from '@mdi/js'; 
 
+  import {loadFile} from '../scripts/save-load.js'
+
   export let setCurrentTab; // Change what the tab is.
   
   let opts = getContext('options')
@@ -30,7 +32,7 @@
     let file
     file = document.querySelector('input').files[0]
 
-    loadQuiz(file)
+    loadFile(file)
   }
 
   // Handles when a user drops a file into the page
@@ -47,7 +49,7 @@
       file = event.dataTransfer.files[0]
     }
 
-    loadQuiz(file)
+    loadFile(file)
   }
 
   // Handles when to show the "dropping" cover
@@ -57,53 +59,16 @@
   }
 
   // Runs when a quiz file is available, checks the validity, and moves forward
-  function loadQuiz(file) {
-    // Check to see if file is JSON
-    if (file.type === 'application/json') {
-
-      let reader = new FileReader()
-      reader.readAsText(file)
-
-      reader.onload = (ev) => {
-        let result = {}
-
-        // Check if file can be parsed
-        try {
-          result = JSON.parse(ev.target.result)
-        } catch (err) {
-          error = 'Cannot Read File'
-          loading = false
-          return
-        }
-
-        // Check if valid quiz file
-        if (typeof result.characters !== 'undefined'
-          && typeof result.questions !== 'undefined'
-          && typeof result.options !== 'undefined'
-        ) {
-          opts.set(result.options)
-          chars.set(result.characters)
-          ques.set(result.questions)
-          setCurrentTab(1)
-        }
-        else {
-          error = 'Cannot Read Quiz File'
-          loading = false
-          return
-        }
-      }
-
-    } else {
-      error = 'Invalid File'
-      loading = false
-      return
-    }
-  }
+  
 </script>
 
 
 
-<div class='back' out:fly={{y: -window.innerHeight, duration: 1000, opacity: 1, easing: quadInOut}} on:drop={dropHandler} on:dragover={dragOverHandler}>
+<div class='back' 
+  out:fly={{y: -window.innerHeight, duration: 1000, opacity: 1, easing: quadInOut}} 
+  on:drop={dropHandler} 
+  on:dragover={dragOverHandler}
+>
   <div class='box'>
 
     <!-- Title/Description -->
@@ -201,7 +166,11 @@
 
   .loading {
     background: rgb(141, 101, 139);
-    background-image: linear-gradient(45deg, rgb(141, 101, 139), white, rgb(141, 101, 139)); 
+    background-image: linear-gradient(45deg, 
+      rgb(141, 101, 139), 
+      white, 
+      rgb(141, 101, 139)
+    ); 
     background-repeat: no-repeat;
     background-clip: text;
     -webkit-background-clip: text;

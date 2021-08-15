@@ -1,6 +1,5 @@
 <script>
-	// Import External Stuff
-	import saveAs from 'file-saver'
+	import {saveFile} from './scripts/save-load.js'
 
 	// Import Svelte Stuff
 	import {setContext} from 'svelte'
@@ -43,31 +42,11 @@
 	document.addEventListener('keydown', (e) => {
 		if ( ( e.ctrlKey || e.metaKey ) && e.key.toLowerCase() === 's' ) {
 			e.preventDefault()
-			if ( currentTab !== null) {
+			if ( currentTab ) {
 				saveFile()
 			}
 		}
 	})
-
-	function saveFile() {
-
-		let fileName = $optStore.title.replace(/[^a-z0-9]/gi, '').toLowerCase();
-
-		console.log(fileName)
-
-		let fileData = new Blob(
-					[JSON.stringify({
-						options: $optStore, 
-						characters: $charStore, 
-						questions: $qStore
-					})],
-					{
-						type: 'application/json'
-					}
-				)
-
-		saveAs(fileData, fileName+'.json');
-	}
 
 </script>
 
