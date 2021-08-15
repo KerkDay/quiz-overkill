@@ -104,6 +104,7 @@
       flex-direction: column;
       height: unset;
       bottom: 0;
+      z-index: 10;
       #nav-tabs {
         flex-direction: column;
       }
