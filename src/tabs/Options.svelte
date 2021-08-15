@@ -182,14 +182,8 @@
     }
   }
   input:not([type='checkbox'], [type='radio']), textarea, select {
-    border: none;
     background: none;
     flex-grow: 1;
-    font-family: var(--font);
-    color: var(--white);
-    font-size: 1rem;
-    &::placeholder { color: var(--grey) }
-    &:focus { outline: none; }
   }
   select {
     background: var(--black);
