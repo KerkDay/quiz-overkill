@@ -8,6 +8,7 @@ specifiers:
   '@sveltejs/vite-plugin-svelte': ^1.0.0-next.14
   '@tsconfig/svelte': ^2.0.1
   browser-image-compression: ^1.0.14
+  fflate: ^0.7.1
   file-saver: ^2.0.5
   lodash: ^4.17.21
   pug: ^3.0.2
@@ -27,6 +28,7 @@ dependencies:
   '@jamescoyle/svelte-icon': 0.1.1
   '@mdi/js': 5.9.55
   browser-image-compression: 1.0.14
+  fflate: 0.7.1
   file-saver: 2.0.5
   lodash: 4.17.21
   randomcolor: 0.6.2
@@ -299,6 +301,10 @@ packages:
   /estree-walker/2.0.2:
     resolution: {integrity: sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==}
     dev: true
+
+  /fflate/0.7.1:
+    resolution: {integrity: sha512-VYM2Xy1gSA5MerKzCnmmuV2XljkpKwgJBKezW+495TTnTCh1x5HcYa1aH8wRU/MfTGhW4ziXqgwprgQUVl3Ohw==}
+    dev: false
 
   /file-saver/2.0.5:
     resolution: {integrity: sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==}

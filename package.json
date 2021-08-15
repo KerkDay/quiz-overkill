@@ -27,6 +27,7 @@
     "@jamescoyle/svelte-icon": "^0.1.1",
     "@mdi/js": "^5.9.55",
     "browser-image-compression": "^1.0.14",
+    "fflate": "^0.7.1",
     "file-saver": "^2.0.5",
     "lodash": "^4.17.21",
     "randomcolor": "^0.6.2"
