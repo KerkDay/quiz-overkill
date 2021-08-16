@@ -90,7 +90,7 @@
     }
   }
 
-  function handleRemoveCharacter(index) {
+  async function handleRemoveCharacter(index) {
     if (index > -1) $characters.splice(index, 1)
     handleOpen(null)
     characters.set($characters)
