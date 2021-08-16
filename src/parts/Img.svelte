@@ -44,7 +44,7 @@
   }
 </script>
 
-<div class='img {pos}'>
+<button class='img {pos}'>
   {#if imgType === 'loading'}
     <div transition:fade class='default-img' >
       <span class='loading'>
@@ -72,9 +72,16 @@
       No Image
     </div>
   {/if}
-</div>
+
+  {#if $$slots}
+    <div class='overlay'>
+      <slot></slot>
+    </div>
+  {/if}
+</button>
 
 <style lang="scss">
+@mixin inset { top: 0; left: 0; right: 0; bottom: 0; }
 .img { 
   font-size: .75rem; 
   color: var(--grey); 
@@ -82,6 +89,22 @@
   place-items: center;
   width: 100%;
   position: relative;
+  border: 0;
+  background-color: var(--black);
+  &:hover, &:focus, &:focus-within {
+    outline: none;
+    .overlay { opacity: 1; }
+  }
+}
+.overlay {
+  position: absolute;
+  @include inset;
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 1rem;
+  background: rgba(0,0,0,0.75);
 }
 
 img, video {
@@ -93,11 +116,13 @@ img, video {
   object-fit: cover;
 }
 
+
 // Thumb IMG type
 .thumb {
   width: 7rem;
   height: 7rem;
   margin: auto;
+  border-radius: .5rem;
   img, video { border-radius: .5rem; }
   @media screen and (max-width: 500px) {
     width: 5rem; height: 5rem;
@@ -113,6 +138,7 @@ img, video {
 }
 .modal {
   width: 15rem; height: 15rem;
+  padding: .5rem;
   img, video{ object-fit: contain; }
 }
 

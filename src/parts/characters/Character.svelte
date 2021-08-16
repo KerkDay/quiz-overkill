@@ -1,7 +1,6 @@
 <script>
   // Svelte Stuff
-	import { quintOut } from 'svelte/easing'
-	import { crossfade, fade } from 'svelte/transition'
+  import { createEventDispatcher } from 'svelte';
 
   // Components
   import SvgIcon from '@jamescoyle/svelte-icon'
@@ -9,24 +8,15 @@
   import debounce from 'lodash/debounce'
   
   import imageCompress from '../../scripts/imageCompress'
+  import {send, receive} from '../../scripts/crossfade'
 
   import Img from '../Img.svelte'
   import Modal from '../Modal.svelte'
 
   // Imported Stuff
   export let char, opened, handleOpen, index
-
-  // Fade between opened/unopened items
-  const [send, receive] = crossfade({
-		duration: d => Math.sqrt(d * 200),
-
-		fallback(node, params) {
-			const style = getComputedStyle(node);
-			const transform = style.transform === 'none' ? '' : style.transform;
-
-			return { duration: 600, easing: quintOut, css: t => ` transform: ${transform} scale(${t}); opacity: ${t} ` };
-		}
-	});
+  
+	const dispatch = createEventDispatcher();
 
   function handleRemoveImg() {
     char.img = null
@@ -64,6 +54,8 @@
     }
 	}))
 
+  
+
 </script>
 
 
@@ -89,26 +81,22 @@
   </div>
 
   {:else}
-    <Modal {handleOpen} {index} {send} {receive} >
+    <Modal {handleOpen} {index} >
       <left>
         <!-- Image -->
-        <button class='img'>
-          <Img img={char.img} alt={char.name} imgType={char.imgType} pos="modal"/>
-          
-          <div class='overlay'>
-            <label class='change-img'>
-              <SvgIcon path={mdiImagePlus} type='mdi' size='1em'/>
-              <span> Upload Image</span>
-              <input type='file' accept='image/*' hidden on:change={handleUploadImg} />
-            </label>
-            {#if char.img}
-              <div class='remove-img' on:click={handleRemoveImg}>
-                <SvgIcon path={mdiImageRemove} type='mdi' size='1em'/>
-                <span> Remove Image</span>
-              </div>
-            {/if}
-          </div>
-        </button>
+        <Img img={char.img} alt={char.name} imgType={char.imgType} pos="modal">
+          {#if char.img}
+            <div class='remove-img' on:click={handleRemoveImg} tabindex="0">
+              <SvgIcon path={mdiImageRemove} type='mdi' size='1em'/>
+              <span> Remove Image</span>
+            </div>
+          {/if}
+          <label class='change-img' tabindex="0">
+            <SvgIcon path={mdiImagePlus} type='mdi' size='1em'/>
+            <span> Upload Image</span>
+            <input type='file' accept='image/*' hidden on:change={handleUploadImg} />
+          </label>
+        </Img>
 
         <!-- Name -->
         <label class='name'>
@@ -125,10 +113,16 @@
         </label>
 
         <div class="char-btns">
-          <button class='duplicate' data-tooltip="Duplicate this Character">
+          <button class='duplicate' data-tooltip="Duplicate" tabindex="0"
+            on:click={()=> dispatch('duplicate', index)}
+          >
             <SvgIcon path={mdiAccountMultiple} type="mdi" size="2em" />
           </button>
-          <button class='remove'>
+          <button class='remove' data-tooltip="Remove" tabindex="0"
+            on:click={()=> {
+              dispatch('remove', index)
+              
+              }}>
             <SvgIcon path={mdiAccountRemove} type="mdi" size="2em" />
           </button>
         </div>
@@ -144,8 +138,6 @@
 
 <style lang='scss'>
 
-@mixin inset { top: 0; left: 0; right: 0; bottom: 0; }
-
 character { display: block; }
 
 .thumb {
@@ -157,31 +149,7 @@ character { display: block; }
   }
 }
 
-
-.img {
-  padding: .5rem;
-  background-color: var(--black);
-  position: relative;
-  border: 0;
-  width: 100%;
-  min-height: 5em;
-  &:hover, &:focus {
-    outline: none;
-    .overlay { opacity: 1; }
-    .change-img, .remove-img { pointer-events: auto !important;}
-  }
-  .overlay {
-    position: absolute;
-    @include inset;
-    opacity: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-size: 1rem;
-    background: rgba(0,0,0,0.75);
-    
-  }
-}
+.change-img, .remove-img { pointer-events: auto !important;}
 .change-img { color: var(--blue); }
 .remove-img { color: var(--red); }
 .change-img, .remove-img { 
