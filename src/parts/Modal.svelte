@@ -5,8 +5,9 @@
     mdiArrowLeftCircle, 
     mdiArrowRightCircle
   } from '@mdi/js'
+  import {send, receive} from '../scripts/crossfade'
 
-  export let handleOpen, index, send, receive
+  export let handleOpen, index
 </script>
 
 <div class='modal-outer' on:click|self={() => handleOpen(null)}>
