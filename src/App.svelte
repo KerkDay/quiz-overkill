@@ -2,7 +2,6 @@
 	import {saveFile} from './scripts/save-load.js'
 
 	// Import Svelte Stuff
-	import {setContext} from 'svelte'
 
 	// Import Components
 	import Start from './tabs/Start.svelte'
@@ -12,11 +11,8 @@
 	import Nav from './parts/Nav.svelte'
 
 	// Import Stores
-	import { optStore, charStore, qStore } from './stores'
-	// Send those stores to global contexts, so that children can use these stores without them being passed down.
-	setContext('options', optStore)
-	setContext('characters', charStore)
-	setContext('questions', qStore)
+	import createStores from './scripts/stores'
+	createStores()
 
 	// The different tabs available
 	let tabs = [
@@ -50,8 +46,10 @@
 
 </script>
 
-<main>
-
+<svelte:head>
+	<title>{currentTab ? currentTab.title+" - " : ""}Quiz Overkill</title>
+</svelte:head>
+<main>	
 	{#if currentTab === null}
 		<Start {setCurrentTab} />
 	{:else}
