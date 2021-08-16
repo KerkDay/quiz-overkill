@@ -67,7 +67,7 @@ input:not([type="checkbox"], [type="radio"]), textarea, select {
 		transition: .2s ease-out;
 		transform: translate(-50%, 5px);
 	}
-	&:hover {
+	&:hover, &:focus, &:active {
 		&:before, &:after {
 			visibility: visible;
 			opacity: 1;
