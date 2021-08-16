@@ -2,7 +2,7 @@ import imageCompression from 'browser-image-compression'
 import randomColor from 'randomcolor';
 
 import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
-const ffmpeg = createFFmpeg({log: true});
+const ffmpeg = createFFmpeg({log: false});
 
 export default async function compressImg(img, size = 300) {
   if (img) {
