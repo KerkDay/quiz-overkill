@@ -41,8 +41,9 @@ export default async function compressImg(img, size = 300) {
         )
   
         const data = ffmpeg.FS('readFile', 'out.mp4')
+        const blob = new Blob([data.buffer], {type:'video/mp4'})
   
-        const url = URL.createObjectURL(new Blob([data.buffer], {type:'video/mp4'}))
+        const url = URL.createObjectURL(blob)
 
         let results = {
           type: 'video',
@@ -58,9 +59,9 @@ export default async function compressImg(img, size = 300) {
       try {
         const compressedImg = await imageCompression(img, {
           maxWidthOrHeight: size,
-          useWebWorker: true
         })
         let buffer = await compressedImg.arrayBuffer()
+        let blob = new Blob([buffer], {type: img.type})
         let url = URL.createObjectURL(new Blob([buffer], {type: img.type}))
 
         let results = {
