@@ -73,7 +73,7 @@
     </div>
   {/if}
 
-  {#if $$slots}
+  {#if $$slots.default}
     <div class='overlay'>
       <slot></slot>
     </div>
