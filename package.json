@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node ./ghpages.js",
     "serve": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.0-next.14",
     "@tsconfig/svelte": "^2.0.1",
+    "gh-pages": "^3.2.3",
     "sass": "^1.36.0",
     "svelte": "^3.41.0",
     "svelte-check": "^2.2.3",
