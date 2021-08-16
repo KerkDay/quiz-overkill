@@ -12,11 +12,11 @@
 
   let characters = getContext('characters')
   let opened = null
-  let shadow = false
 
-  document.addEventListener('scroll', () => {
+  let shadow = false
+  document.addEventListener('scroll', debounce(() => {
     shadow = window.scrollY > 0
-  })
+  }))
 
   /**
    * A function to charcge which characters modal is showing.
@@ -61,7 +61,7 @@
       img: img ? img : null,
       imgType: imgType ? imgType : null
     })
-    $characters = [...$characters] // A cheat to display the new character
+    characters.set($characters) // A cheat to display the new character
     scrollTo(id)
     return {id: id, index: $characters.length-1}
   }
@@ -70,7 +70,7 @@
     let files = input.target.files
     for (let i in files) {
       if (files[i].name && /image\/*/g.test(files[i].type)) {
-        let {id, index} = handleNewCharacter({
+        let {index} = handleNewCharacter({
           name: files[i].name.split('.')[0],
           imgType: 'loading'
         })
@@ -84,10 +84,16 @@
           }
         } catch(e) {
           $characters.splice(index, 1)
-          $characters = [...$characters]
+          characters.set($characters)
         }
       }
     }
+  }
+
+  function handleRemoveCharacter(index) {
+    if (index > -1) $characters.splice(index, 1)
+    handleOpen(null)
+    characters.set($characters)
   }
 
 </script>
@@ -116,12 +122,19 @@
 
   <!-- Characters -->
   <characters>
-    {#each $characters as char, index }
+    {#each $characters as char, index (char.id)}
       <Character 
         {char}
         {opened}
         {index}
         {handleOpen}
+        on:duplicate={() => {
+          handleNewCharacter({id: null, ...char})
+          handleOpen($characters.length-1)
+        }}
+        on:remove={() => {
+          handleRemoveCharacter(index)
+        }}
       />
     {/each}
   </characters>
