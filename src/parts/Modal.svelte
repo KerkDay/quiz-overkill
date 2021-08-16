@@ -5,26 +5,25 @@
     mdiArrowLeftCircle, 
     mdiArrowRightCircle
   } from '@mdi/js'
-  import {send, receive} from '../scripts/crossfade'
 
   export let handleOpen, index
 </script>
 
-<div class='modal-outer' on:click|self={() => handleOpen(null)}>
-  <div class='modal-inner'
-    in:receive={receive}
-    out:send={send}
-  >
+<div class='modal-outer' 
+on:click|self={() => handleOpen(null)} 
+transition:fade="{{duration: 300}}"
+>
+  <div class='modal-inner'>
     <slot></slot>
   </div>
   
-  <x transition:fade >&times;</x>
+  <x >&times;</x>
 
-  {#if index}
-    <div class='prev' on:click={() => handleOpen(index-1)} transition:fade>
+  {#if typeof index === "number"}
+    <div class='prev' on:click={handleOpen(index-1)}>
       <SvgIcon path={mdiArrowLeftCircle} type='mdi' size='2em'/>
     </div>
-    <div class='next' on:click={() => handleOpen(index+1)} transition:fade>
+    <div class='next' on:click={handleOpen(index+1)}>
       <SvgIcon path={mdiArrowRightCircle} type='mdi' size='2em'/>
     </div>
   {/if}

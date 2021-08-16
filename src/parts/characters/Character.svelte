@@ -8,7 +8,7 @@
   import debounce from 'lodash/debounce'
   
   import imageCompress from '../../scripts/imageCompress'
-  import {send, receive} from '../../scripts/crossfade'
+	import { fade } from 'svelte/transition'
 
   import Img from '../Img.svelte'
   import Modal from '../Modal.svelte'
@@ -21,6 +21,7 @@
   function handleRemoveImg() {
     char.img = null
   }
+
   async function handleUploadImg(input) {
     document.activeElement.blur()
     try {
@@ -54,8 +55,6 @@
     }
 	}))
 
-  
-
 </script>
 
 
@@ -63,22 +62,17 @@
 <character id={char.id}>
 
   {#if opened !== index}
-  <div class='thumb' on:click={handleOpen(index)}
-    in:receive="{{key: char.id}}"
-    out:send="{{key: char.id}}"
-  >
-    <!-- Image -->
-    <Img img={char.img} alt={char.name} imgType={char.imgType} pos="thumb"/>
+    <div class='thumb' on:click={handleOpen(index)} transition:fade="{{duration: 300}}">
+      <Img img={char.img} alt={char.name} imgType={char.imgType} pos="thumb"/>
 
-    <!-- Desc -->
-    <div>
-      {#if char.name}
-        <strong>{char.name}</strong>
-      {:else}
-        <strong style='color:var(--grey)'>Nobody</strong>
-      {/if}
+      <div>
+        {#if char.name}
+          <strong>{char.name}</strong>
+        {:else}
+          <strong style='color:var(--grey)'>Nobody</strong>
+        {/if}
+      </div>
     </div>
-  </div>
 
   {:else}
     <Modal {handleOpen} {index} >
