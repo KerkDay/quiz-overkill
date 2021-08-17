@@ -7,6 +7,5 @@ export default defineConfig({
   plugins: [
     svelte(),
     crossOriginIsolation()
-  ],
-  base: "https://kerkday.github.io/quiz-overkill/"
+  ]
 })
