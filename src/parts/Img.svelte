@@ -7,7 +7,7 @@
    * @param imgType {string} Either "image" or "video"
    * @param pos {string} The "Position" of the image.
    *    thumb: As is shown as thumbnails on the Characters page
-   *    modal: As is shown in the CHaracter page modal
+   *    modal: As is shown in the Character page modal
    *    welcome: As shown on the Options page, for the welcome image.
    * @param icon {string} Default is the mdiAccountQuestion icon. Otherwise, fill with SVG path data.
    */
@@ -44,7 +44,7 @@
   }
 </script>
 
-<button class='img {pos}'>
+<div class='img {pos}'>
   {#if imgType === 'loading'}
     <div transition:fade class='default-img' >
       <span class='loading'>
@@ -72,13 +72,7 @@
       No Image
     </div>
   {/if}
-
-  {#if $$slots.default}
-    <div class='overlay'>
-      <slot></slot>
-    </div>
-  {/if}
-</button>
+</div>
 
 <style lang="scss">
 @mixin inset { top: 0; left: 0; right: 0; bottom: 0; }
@@ -91,31 +85,21 @@
   position: relative;
   border: 0;
   background-color: var(--black);
-  &:hover, &:focus, &:focus-within {
-    outline: none;
-    .overlay { opacity: 1; }
-  }
-}
-.overlay {
-  position: absolute;
-  @include inset;
-  opacity: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  font-size: 1rem;
-  background: rgba(0,0,0,0.75);
 }
 
 img, video {
   display: block;
   position: absolute;
-  left: 0; right: 0;
-  top: 0; bottom: 0;
-  width: 100%; height: 100%;
+  @include inset;
   object-fit: cover;
 }
 
+@keyframes spinner { from {transform: rotateZ(0deg)} to {transform: rotateZ(360deg)} }
+.default-img { text-align: center; }
+.loading{
+  display: block;
+  animation: spinner 1s ease-in-out infinite;
+}
 
 // Thumb IMG type
 .thumb {
@@ -130,12 +114,6 @@ img, video {
   }
 }
 
-@keyframes spinner { from {transform: rotateZ(0deg)} to {transform: rotateZ(360deg)} }
-.default-img { text-align: center; }
-.loading{
-  display: block;
-  animation: spinner 1s ease-in-out infinite;
-}
 .modal {
   width: 15rem; height: 15rem;
   padding: .5rem;
@@ -143,7 +121,6 @@ img, video {
 }
 
 .welcome {
-  
   height: 10rem;
   img, video {
     display: block;
