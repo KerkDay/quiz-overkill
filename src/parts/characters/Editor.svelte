@@ -49,7 +49,7 @@
 </script>
 
 
-<Modal on:open {index} >
+<Modal on:open {index}>
   <!-- Image -->
   <ImgOverlay img={char.img} alt={char.id} imgType={char.imgType} pos="modal">
     {#if char.img}
