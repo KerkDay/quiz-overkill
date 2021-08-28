@@ -49,17 +49,6 @@ x {
   font-size: 2rem;
 }
 
-.modal-inner {
-  display: grid;
-  grid-template-columns: auto auto;
-  border-radius: 1em;
-  transition: all 1s;
-  padding: 1em; margin: 2ch;
-  grid-gap: 1em;
-  @media screen and (max-width: 500px) {grid-template-columns: auto;}
-  
-}
-
 .prev, .next {
   display: block;
   position: fixed;
