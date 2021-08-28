@@ -117,7 +117,7 @@ img, video {
 }
 
 .modal {
-  width: 15rem; height: 15rem;
+  width: 300px; height: 300px;
   padding: .5rem;
   img, video{ object-fit: contain; }
 }
