@@ -64,7 +64,7 @@
 
   function makeID(num = 3) {
     function randChar() {
-    let idChars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz🧙']
+    let idChars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890🦍']
       return idChars[ Math.floor( Math.random() * idChars.length ) ]
     }
     let id = ""
