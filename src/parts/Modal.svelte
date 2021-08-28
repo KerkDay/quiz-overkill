@@ -1,5 +1,5 @@
 <script>
-	import { fade } from 'svelte/transition'
+	import { fly, fade } from 'svelte/transition'
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { createEventDispatcher } from 'svelte';
   import { 
@@ -14,7 +14,7 @@
 
 <div class='modal-outer' 
 on:click|self={() => {dispatch('open', null)}} 
-transition:fade="{{duration: 300}}"
+transition:fade
 >
   <div class='modal-inner'>
     <slot></slot>
