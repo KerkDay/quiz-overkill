@@ -32,6 +32,10 @@
 <style lang="scss">
 @mixin inset { top: 0; left: 0; right: 0; bottom: 0; }
 button { 
+  border: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
   &:hover, &:focus, &:focus-within {
     outline: none;
     .overlay { opacity: 1; }
