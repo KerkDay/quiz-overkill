@@ -44,9 +44,9 @@
   }
 </script>
 
-<div class='img {pos}'>
+<div class='img {pos}' >
   {#if imgType === 'loading'}
-    <div transition:fade class='default-img' >
+    <div class='default-img' >
       <span class='loading'>
         <SvgIcon path={mdiLoading} type='mdi' size='2em'/>
       </span>
@@ -54,9 +54,9 @@
       Loading
     </div>
   {:else if img && imgType && imgType==='image'}
-    <img transition:fade src='{img}' alt='{alt}'/>
+    <img src='{img}' alt='{alt}' transition:fade />
   {:else if img && imgType && imgType==='video' }
-    <video transition:fade autoplay loop={checkLoop()}
+    <video autoplay loop={checkLoop()} transition:fade 
       on:mouseover={playVideo}
       on:focus={playVideo}
       on:mouseleave={stopVideo}
@@ -66,7 +66,7 @@
       Your browser doesn't support videos.
     </video>
   {:else}
-    <div transition:fade class='default-img'>
+    <div class='default-img'>
       <SvgIcon path={icon} type='mdi' size='2em'/>
       <br />
       No Image
@@ -89,10 +89,8 @@
 
 img, video {
   display: block;
-  position: absolute;
   width: 100%;
   height: 100%;
-  @include inset;
   object-fit: cover;
 }
 
