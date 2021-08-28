@@ -9,6 +9,7 @@
   import imageCompress from '../scripts/imageCompress'
 
   import Character from '../parts/characters/Character.svelte'
+  import Editor from '../parts/characters/Editor.svelte'
 
   let characters = getContext('characters')
   let opened = null
@@ -19,19 +20,37 @@
   }))
 
   /**
-   * A function to charcge which characters modal is showing.
+   * A function to change which characters modal is showing.
    * @param val Which character should be opened?
    */
-  let handleOpen = debounce((val) => { 
-    if (val >= $characters.length) val = 0
-    else if (val < 0) val = $characters.length - 1
+  function handleOpenCharacter(event) { 
+    // Check if it's a number, or an event, or is null
+    let val = typeof event === "number" 
+      ? event 
+      : event && typeof event.detail === "number"
+        ? event.detail
+        : null
+
+
+    if (val === null) {
+      // Force rerender of characters
+      characters.set($characters)
+    } else {
+      // Check if number is within array length. If not, loop around!
+      val = val >= $characters.length 
+        ? 0 
+        : val < 0 
+          ? $characters.length - 1
+          : val
+    }
 
     // If moved via left/right arrows, scroll to them
     if ( typeof opened === 'number' && typeof val === 'number' && $characters[val] ) {
       scrollTo(val)
     }
-    opened = val 
-  })
+
+    opened = val
+  }
 
   /**
    * Scroll down to a specific character
@@ -90,10 +109,22 @@
     }
   }
 
-  async function handleRemoveCharacter(index) {
-    if (index > -1) $characters.splice(index, 1)
-    handleOpen(null)
-    characters.set($characters)
+  function handleRemoveCharacter(event) {
+    let index = event.detail
+    if (index > -1) {
+      handleOpenCharacter(null)
+      $characters.splice(index, 1)
+      characters.set($characters)
+    }
+  }
+
+  function handleDuplicateCharacter(event) {
+    let index = event.detail
+    if (index > -1) {
+      handleOpenCharacter(null)
+      $characters.splice(index, 0, $characters[index])
+      characters.set($characters)
+    }
   }
 
 </script>
@@ -105,7 +136,7 @@
     <!-- New Character -->
     <button id='new-char-button' on:click={()=>{
         handleNewCharacter({}); 
-        handleOpen($characters.length-1);
+        handleOpenCharacter($characters.length-1);
       }}>
       <SvgIcon path={mdiAccountPlus} type='mdi' size='1em' />
       Add Character
@@ -125,20 +156,22 @@
     {#each $characters as char, index (char.id)}
       <Character 
         {char}
-        {opened}
         {index}
-        {handleOpen}
-        on:duplicate={() => {
-          handleNewCharacter({id: null, ...char})
-          handleOpen($characters.length-1)
-        }}
-        on:remove={() => {
-          handleRemoveCharacter(index)
-        }}
+        on:open={handleOpenCharacter}
       />
     {/each}
   </characters>
 </div>
+
+{#if typeof opened === "number"}
+  <Editor 
+    char={$characters[opened]}
+    index={opened}
+    on:open={handleOpenCharacter}
+    on:duplicate={handleDuplicateCharacter}
+    on:remove={handleRemoveCharacter} 
+  />
+{/if}
 
 <style lang='scss'>
   controls {
