@@ -62,17 +62,19 @@
     window.scrollBy({top: el.top - (el.height*2), behavior: 'smooth'})
   })
 
-  function handleNewCharacter({id, name, desc, img, imgType}) {
-    let idChars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz🧙']
+  function makeID(num = 3) {
     function randChar() {
+    let idChars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz🧙']
       return idChars[ Math.floor( Math.random() * idChars.length ) ]
     }
-    function makeID(num = 3) {
-      id = ""
-      for(let i=num; num>0; num--) { id += randChar() }
-      for (let char in $characters) { if (char.id === id) makeID(num) }
-    }
-    if (typeof id === 'undefined') makeID()
+    let id = ""
+    for(let i=num; num>0; num--) { id += randChar() }
+    for (let char in $characters) { if (char.id === id) makeID(num) }
+    return id
+  }
+
+  function handleNewCharacter({name, desc, img, imgType}) {
+    let id = makeID()
     $characters.push({
       id: id,
       name: name ? name: '',
@@ -121,9 +123,17 @@
   function handleDuplicateCharacter(event) {
     let index = event.detail
     if (index > -1) {
-      handleOpenCharacter(null)
-      $characters.splice(index, 0, $characters[index])
+      let char = $characters[index]
+      let tempChar = {
+        id: makeID(),
+        name: char.name,
+        desc: char.desc,
+        img: char.img,
+        imgType: char.imgType
+      }
+      $characters.splice(index+1, 0, tempChar)
       characters.set($characters)
+      handleOpenCharacter(index+1)
     }
   }
 
