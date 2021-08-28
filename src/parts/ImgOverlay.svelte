@@ -13,8 +13,9 @@
    */
 
   import Img from './Img.svelte'
+  import { mdiAccountQuestion } from '@mdi/js'
 
-  export let img, alt, imgType, pos, icon
+  export let img, alt, imgType, pos, icon=mdiAccountQuestion
 </script>
 
 <button>
