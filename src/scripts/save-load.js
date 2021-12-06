@@ -5,7 +5,6 @@
  */
 import saveAs from 'file-saver'
 import JSZip from 'jszip'
-import { getContext } from 'svelte'
 
 /**
  * 
@@ -23,9 +22,7 @@ async function saveFile(options, characters, questions) {
 
   let zip = new JSZip()
 
-  console.log(characters)
-
-  let charsImgFolder = zip.folder('chars')
+  let imgFolder = zip.folder('img')
 
   if (Array.isArray(characters)) {
 
@@ -37,18 +34,23 @@ async function saveFile(options, characters, questions) {
       const charFileName = characters[x].imgType === "image" 
         ? `${characters[x].id}.png` 
         : `${characters[x].id}.mp4`
-      charsImgFolder.file(charFileName, imgData, {base64: true})
+      imgFolder.file(charFileName, imgData, {base64: true})
+      fileData.characters.push({
+        ...characters[x],
+        img: `img/${charFileName}`
+      })
     }
   }
 
-  zip.file('data.json', JSON.stringify(fileData))
+  zip.file('data.json', JSON.stringify(fileData, null, " "))
 
   const fullZip = await zip.generateAsync({
     type: "blob",
     compression: "DEFLATE",
     compressionOptions: {
       level: 9
-    }
+    },
+    mimeType: "application/quiz"
   })
 
   saveAs(fullZip, fileName+'.qo');
@@ -60,43 +62,44 @@ async function saveFile(options, characters, questions) {
  * @param {File} file 
  * @returns 
  */
-async function loadFile(file) {
-  // Check to see if file is JSON
-  if (file.type === 'application/json') {
+async function loadFile(file, options, characters, questions, setCurrentTab) {
+  // Check to see if file is quiz file
+  try {
 
     let reader = new FileReader()
-    reader.readAsText(file)
+    reader.readAsArrayBuffer(file)
 
-    reader.onload = (ev) => {
-      let result = {}
+    reader.onload = async (ev) => {
 
-      // Check if file can be parsed
-      try {
-        result = JSON.parse(ev.target.result)
-      } catch (err) {
-        error = 'Cannot Read File'
-        loading = false
-        return
-      }
+      let zip = new JSZip()
+      let content = await zip.loadAsync(ev.target.result, {})
+
+      let config = JSON.parse(await content.file('data.json').async('text'));
 
       // Check if valid quiz file
-      if (typeof result.characters !== 'undefined'
-        && typeof result.questions !== 'undefined'
-        && typeof result.options !== 'undefined'
+      if (typeof config.characters === 'undefined'
+        || typeof config.questions === 'undefined'
+        || typeof config.options === 'undefined'
       ) {
-        opts.set(result.options)
-        chars.set(result.characters)
-        ques.set(result.questions)
-        setCurrentTab(1)
-      }
-      else {
         error = 'Cannot Read Quiz File'
         loading = false
         return
       }
+
+      for (let x in config.characters) {
+        let char = config.characters[x]
+        const charImgBlob = await content.file(char.img).async('blob')
+        config.characters[x].img = URL.createObjectURL(charImgBlob)
+      }
+
+      options.set(config.options)
+      questions.set(config.questions)
+      characters.set(config.characters)
+      setCurrentTab(1)
+
     }
 
-  } else {
+  } catch (err) {
     error = 'Invalid File'
     loading = false
     return

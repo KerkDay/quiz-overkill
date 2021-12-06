@@ -32,7 +32,7 @@
     let file
     file = document.querySelector('input').files[0]
 
-    loadFile(file)
+    loadFile(file, opts, chars, ques, setCurrentTab)
   }
 
   // Handles when a user drops a file into the page
@@ -49,7 +49,7 @@
       file = event.dataTransfer.files[0]
     }
 
-    loadFile(file)
+    loadFile(file, opts, chars, ques, setCurrentTab)
   }
 
   // Handles when to show the "dropping" cover
@@ -100,7 +100,7 @@
         <SvgIcon path={mdiFileUpload} type='mdi' size='2em'/>
         <br />
         Load Quiz
-        <input type='file' accept='.json' hidden on:change='{() => handleLoadFile()}'/>
+        <input type='file' accept='.qo' hidden on:change='{() => handleLoadFile()}'/>
       </label>
 
     {/if}
