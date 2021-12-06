@@ -2,6 +2,7 @@
 	import {saveFile} from './scripts/save-load.js'
 
 	// Import Svelte Stuff
+	import { getContext } from 'svelte'
 
 	// Import Components
 	import Start from './tabs/Start.svelte'
@@ -13,6 +14,11 @@
 	// Import Stores
 	import createStores from './scripts/stores'
 	createStores()
+
+	// Get Context
+	let options = getContext('options')
+	let characters = getContext('characters');
+  let questions = getContext('questions')
 
 	// The different tabs available
 	let tabs = [
@@ -39,7 +45,7 @@
 		if ( ( e.ctrlKey || e.metaKey ) && e.key.toLowerCase() === 's' ) {
 			e.preventDefault()
 			if ( currentTab ) {
-				saveFile()
+				saveFile($options,$characters,$questions)
 			}
 		}
 	})

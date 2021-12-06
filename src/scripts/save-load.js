@@ -4,24 +4,54 @@
  * @version 0.1.0
  */
 import saveAs from 'file-saver'
-import {} from 'fflate'
+import JSZip from 'jszip'
+import { getContext } from 'svelte'
 
 /**
  * 
  */
-async function saveFile() {
-  let fileName = $optStore.title.replaceAll(/[^a-z0-9]/gi, '').toLowerCase();
+async function saveFile(options, characters, questions) {
 
-  let fileData = new Blob(
-    [JSON.stringify({
-      options: $optStore, 
-      characters: $charStore, 
-      questions: $qStore
-    })],
-    { type: 'application/json' }
-  )
+  let fileName = typeof options.title === "string"
+    ? options.title.replaceAll(/[^a-z0-9]/gi, '').toLowerCase()
+    : "quiz";
+  let fileData = {
+    options: options, 
+    questions: questions,
+    characters: []
+  }
 
-  saveAs(fileData, fileName+'.json');
+  let zip = new JSZip()
+
+  console.log(characters)
+
+  let charsImgFolder = zip.folder('chars')
+
+  if (Array.isArray(characters)) {
+
+    for (let x in characters) {
+      const charImgResponse = await fetch(characters[x].img)
+      const charImgBlob = await charImgResponse.blob()
+
+      const imgData = new File([charImgBlob], `${characters[x].id}.png`);
+      const charFileName = characters[x].imgType === "image" 
+        ? `${characters[x].id}.png` 
+        : `${characters[x].id}.mp4`
+      charsImgFolder.file(charFileName, imgData, {base64: true})
+    }
+  }
+
+  zip.file('data.json', JSON.stringify(fileData))
+
+  const fullZip = await zip.generateAsync({
+    type: "blob",
+    compression: "DEFLATE",
+    compressionOptions: {
+      level: 9
+    }
+  })
+
+  saveAs(fullZip, fileName+'.qo');
   
 }
 
