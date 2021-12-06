@@ -95,7 +95,7 @@ async function loadFile(file, options, characters, questions, setCurrentTab) {
       options.set(config.options)
       questions.set(config.questions)
       characters.set(config.characters)
-      setCurrentTab(1)
+      setCurrentTab(0)
 
     }
 
