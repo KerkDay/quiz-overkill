@@ -103,11 +103,13 @@ img, video {
 
 // Thumb IMG type
 .thumb {
-  width: 7rem;
-  height: 7rem;
   margin: auto;
   border-radius: .5rem;
-  img, video { border-radius: .5rem; }
+  img, video { 
+    border-radius: .5rem;
+    width: 7rem;
+    height: 7rem;
+  }
   @media screen and (max-width: 500px) {
     width: 5rem; height: 5rem;
     img, video {border-radius: .25rem;}
