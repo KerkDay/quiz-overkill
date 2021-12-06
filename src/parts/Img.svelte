@@ -105,6 +105,8 @@ img, video {
 .thumb {
   margin: auto;
   border-radius: .5rem;
+  width: 7rem;
+  height: 7rem;
   img, video { 
     border-radius: .5rem;
     width: 7rem;
