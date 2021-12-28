@@ -10,11 +10,20 @@
   export let index
 
   const dispatch = createEventDispatcher();
+
+  // Exit Modal when escape key is pressed.
+  document.addEventListener('keydown', (e) => {
+		if ( e.key === "Escape" ) {
+			e.preventDefault()
+			dispatch('open', null)
+		}
+	})
+
 </script>
 
 <div class='modal-outer' 
-on:click|self={() => {dispatch('open', null)}} 
-transition:fade
+  on:click|self={() => {dispatch('open', null)}} 
+  transition:fade
 >
   <div class='modal-inner'>
     <slot></slot>
