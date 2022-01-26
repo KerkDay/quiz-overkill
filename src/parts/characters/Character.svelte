@@ -34,7 +34,7 @@ character { display: block; }
   background: black;
   border-radius: .5rem;
   padding: .5rem;
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: $phone-max) {
     border-radius: .25rem; padding: .25rem;
   }
 }

@@ -1,6 +1,9 @@
 /* Font Faces */
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
 
+/* CONFIG */
+@import "config.scss";
+
 :root {
 	font-size: 18px;
 	font-family: var(--font);
@@ -27,9 +30,6 @@
 
 	/* Sizes */
 	--ideal-width: clamp(40ch, 75%, 75ch);
-
-	/* Breaks */
-	--phone-max: 500px;
 }
 
 * { box-sizing: border-box }
@@ -52,7 +52,7 @@ input:not([type="checkbox"], [type="radio"]), textarea, select {
   &::placeholder { color: var(--grey); }
 }
 
-@media screen and (max-width: 576px) {
+@media screen and (max-width: $phone-max) {
 	:root {
 		--ideal-width: 100%;
 	}

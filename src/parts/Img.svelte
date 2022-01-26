@@ -112,7 +112,7 @@ img, video {
     width: 7rem;
     height: 7rem;
   }
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: $phone-max) {
     width: 5rem; height: 5rem;
     img, video {border-radius: .25rem;}
   }

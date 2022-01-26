@@ -199,7 +199,7 @@
 
   p {
     width: 30ch;
-    @media (max-width: 500px) {width: 100%}
+    @media (max-width: $phone-max) {width: 100%}
   }
 
   foot {

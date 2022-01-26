@@ -9,7 +9,7 @@
 	import Options from './tabs/Options.svelte'
 	import Characters from './tabs/Characters.svelte'
 	import Questions from './tabs/Questions.svelte'
-	import Nav from './parts/Nav.svelte'
+	import Nav from './parts/nav/Nav.svelte'
 
 	// Import Stores
 	import createStores from './scripts/stores'
@@ -18,7 +18,7 @@
 	// Get Context
 	let options = getContext('options')
 	let characters = getContext('characters');
-  let questions = getContext('questions')
+  	let questions = getContext('questions')
 
 	// The different tabs available
 	let tabs = [
@@ -67,10 +67,11 @@
 <style lang="scss">
 	main {
 		text-align: center;
-		padding: 3.5rem .5rem .5rem;
+		padding: 3rem 0 0;
 		min-height: 100vh;
+		overflow: none;
 	}
 
-	@media (max-width: 500px) {
+	@media (max-width: $phone-max) {
 	}
 </style>

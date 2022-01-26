@@ -148,18 +148,14 @@
     align-items: flex-start;
     &:hover, &:focus-within { background: var(--black); }
   }
-  controls {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
   optname {
+    padding: 0.5rem;
     margin-right: 1ch;
     font-weight: 300;
     color: var(--white);
     text-align: right;
     width: 15ch;
-    @media (max-width: 500px) { width: 10ch; }
+    @media (max-width: $phone-max) { width: 10ch; }
   }
   .sm-btn {
     font-size: .90rem;
@@ -169,13 +165,12 @@
     margin: 0;
     display: block;
     text-align: right;
-    @media (max-width: 500px) { 
+    @media (max-width: $phone-max) { 
       font-size: 1rem; 
       text-align: center 
     }
-    svg {margin-right:.25ch}
     span {
-      @media (max-width: 500px) { 
+      @media (max-width: $phone-max) { 
         display: block;
         width: 100%;
        }
