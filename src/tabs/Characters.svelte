@@ -221,7 +221,7 @@
     padding-top: 4em;
     margin: auto;
     justify-content: center;
-    @media screen and (max-width:500px) {
+    @media screen and (max-width: $phone-max) {
       grid-template-columns: repeat(auto-fit, minmax(6em, 6em));
     }
   }

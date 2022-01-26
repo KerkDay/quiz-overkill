@@ -1,5 +1,5 @@
 <script>
-	import { fly, fade } from 'svelte/transition'
+	import { fade } from 'svelte/transition'
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { createEventDispatcher } from 'svelte';
   import { 
@@ -64,7 +64,7 @@ x {
   color: var(--white);
   &:hover {color: var(--grey);}
   top: 50%;
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: $phone-max) {
     top: unset;
     bottom: 1em;
   }
