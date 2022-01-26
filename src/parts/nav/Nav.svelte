@@ -1,16 +1,17 @@
 <script>
   import {slide} from 'svelte/transition'
-  import {mdiMenu} from '@mdi/js'
+  import { mdiMenu } from '@mdi/js'
   import SvgIcon from '@jamescoyle/svelte-icon'
+  import BurgerMenu from './BurgerMenu.svelte'
 
   export let setCurrentTab, tabs, currentTab
 
-  let opened = false, shadow = false
+  let navOpened = false, shadow = false
 
-  if (window.innerWidth > 500) opened = true
+  if (window.innerWidth > 500) navOpened = true
 
   let handleClickTab = (e) => {
-    if (window.innerWidth <= 500) opened = false
+    if (window.innerWidth <= 500) navOpened = false
     setCurrentTab(e)
   }
 
@@ -21,15 +22,16 @@
 </script>
 
 <!-- BURGER MENU -->
-<div id='nav-mobile' on:click={()=>{opened = !opened}}>
+<div id='nav-mobile' on:click={()=>{navOpened = !navOpened}}>
   <SvgIcon path={mdiMenu} type='mdi' size='1em' color='var(--white)'/>
 </div>
 
-{#if opened}
+{#if navOpened}
   <nav transition:slide class={shadow ? 'nav-shadow' : ''}>
 
     <!-- LOGO -->
-    <div></div>
+    <div>
+    </div>
 
     <!-- TABS -->
     <div id='nav-tabs'>
@@ -43,13 +45,14 @@
     </div>
 
     <!-- EXTRAS -->
-    <div></div>
+    <div>
+      <BurgerMenu />
+    </div>
 
   </nav>
 {/if}
 
 <style lang='scss'>
-
 
   @mixin top-bar {
     position: fixed;
@@ -67,6 +70,7 @@
     justify-content: space-between;
     box-shadow: none;
     transition: box-shadow .5s;
+    z-index: 10;
   }
   #nav-tabs {
     display: flex;
@@ -94,7 +98,7 @@
     box-shadow: 0 0 1rem rgba(0,0,0,0.5);
   }
 
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: $phone-max) {
     #nav-mobile {
       display: block;
     }
