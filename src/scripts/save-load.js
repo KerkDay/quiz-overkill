@@ -5,9 +5,13 @@
  */
 import saveAs from 'file-saver'
 import JSZip from 'jszip'
+import constants from './constants'
 
 /**
- * 
+ * A function to save the current file.
+ * @param {Object} options
+ * @param {Object} characters
+ * @param {Object} questions 
  */
 async function saveFile(options, characters, questions) {
 
@@ -107,4 +111,11 @@ async function loadFile(file, options, characters, questions, setCurrentTab) {
   }
 }
 
-export {saveFile, loadFile}
+async function exitFile(options, characters, questions, setCurrentTab) {
+  options.set({...constants.DEFAULT_OPTIONS})
+  characters.set([...constants.DEFAULT_CHARACTERS])
+  questions.set([...constants.DEFAULT_QUESTIONS])
+  !!setCurrentTab && setCurrentTab(null)
+}
+
+export { saveFile, loadFile, exitFile }

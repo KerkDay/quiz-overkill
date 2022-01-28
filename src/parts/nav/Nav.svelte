@@ -46,7 +46,7 @@
 
     <!-- EXTRAS -->
     <div>
-      <BurgerMenu />
+      <BurgerMenu {setCurrentTab}/>
     </div>
 
   </nav>

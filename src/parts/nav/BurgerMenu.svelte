@@ -1,8 +1,10 @@
 <script>
-    import SvgIcon from "@jamescoyle/svelte-icon";
-    import { mdiDotsHorizontal, mdiContentSave, mdiFileUpload } from '@mdi/js'
-    import { loadFile, saveFile } from '../../scripts/save-load'
-    import { getContext } from 'svelte';
+    import SvgIcon from "@jamescoyle/svelte-icon"
+    import { mdiDotsHorizontal, mdiContentSave, mdiFileUpload, mdiExitRun } from '@mdi/js'
+    import { loadFile, saveFile, exitFile } from '../../scripts/save-load'
+    import { getContext } from 'svelte'
+
+    export let setCurrentTab
 
     // Get Context
     let options = getContext('options')
@@ -12,8 +14,7 @@
 
     function handleLoadFile(target) {
         let file = target.files[0]
-
-        loadFile(file, options, characters, questions)
+        loadFile(file, options, characters, questions, setCurrentTab)
     }
 
 </script>
@@ -41,9 +42,18 @@
             <SvgIcon path={mdiFileUpload} type="mdi" size='1rem'/>
             Load
             <input type='file' accept='.qo' hidden on:change={(e) => {
-                handleLoadFile(e.target);
+                handleLoadFile(e.target)
             }}/>
         </label>
+
+        <menuItem
+            on:click={() => {
+                exitFile(options, characters, questions, setCurrentTab)
+            }}
+        >
+            <SvgIcon path={mdiExitRun} type="mdi" size='1rem'/>
+            Exit
+        </menuItem>
     </burgerMenu>
 </outer>
 

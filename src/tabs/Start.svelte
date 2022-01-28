@@ -1,19 +1,19 @@
 <script>
   import { fly } from 'svelte/transition' 
   import { quadInOut } from 'svelte/easing'
-  import { getContext, setContext } from 'svelte';
+  import { getContext } from 'svelte'
 
   // For Icons
   import SvgIcon from '@jamescoyle/svelte-icon'
-  import { mdiFileUpload, mdiFilePlus } from '@mdi/js'; 
+  import { mdiFileUpload, mdiFilePlus } from '@mdi/js'
 
   import {loadFile} from '../scripts/save-load.js'
 
-  export let setCurrentTab; // Change what the tab is.
+  export let setCurrentTab // Change what the tab is.
   
-  let opts = getContext('options')
-  let chars = getContext('characters')
-  let ques = getContext('questions')
+  let options = getContext('options')
+  let characters = getContext('characters')
+  let questions = getContext('questions')
 
   let loading = false
   let droppingFile = false
@@ -32,7 +32,7 @@
     let file
     file = document.querySelector('input').files[0]
 
-    loadFile(file, opts, chars, ques, setCurrentTab)
+    loadFile(file, options, characters, questions, setCurrentTab)
   }
 
   // Handles when a user drops a file into the page
@@ -49,7 +49,7 @@
       file = event.dataTransfer.files[0]
     }
 
-    loadFile(file, opts, chars, ques, setCurrentTab)
+    loadFile(file, options, characters, questions, setCurrentTab)
   }
 
   // Handles when to show the "dropping" cover
