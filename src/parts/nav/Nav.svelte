@@ -11,8 +11,12 @@
   if (window.innerWidth > 500) navOpened = true
 
   let handleClickTab = (e) => {
-    if (window.innerWidth <= 500) navOpened = false
+    if (window.innerWidth <= 500) toggleNav()
     setCurrentTab(e)
+  }
+
+  let toggleNav = () => {
+    navOpened = !navOpened
   }
 
   document.addEventListener('scroll', () => {
@@ -22,7 +26,7 @@
 </script>
 
 <!-- BURGER MENU -->
-<div id='nav-mobile' on:click={()=>{navOpened = !navOpened}}>
+<div id='nav-mobile' on:click={toggleNav}>
   <SvgIcon path={mdiMenu} type='mdi' size='1em' color='var(--white)'/>
 </div>
 
@@ -46,7 +50,7 @@
 
     <!-- EXTRAS -->
     <div>
-      <BurgerMenu {setCurrentTab}/>
+      <BurgerMenu {setCurrentTab} {toggleNav}/>
     </div>
 
   </nav>
@@ -111,6 +115,9 @@
       z-index: 10;
       #nav-tabs {
         flex-direction: column;
+      }
+      .tab {
+        margin: 1rem;
       }
     }
   }

@@ -4,7 +4,7 @@
     import { loadFile, saveFile, exitFile } from '../../scripts/save-load'
     import { getContext } from 'svelte'
 
-    export let setCurrentTab
+    export let setCurrentTab, toggleNav
 
     // Get Context
     let options = getContext('options')
@@ -15,6 +15,12 @@
     function handleLoadFile(target) {
         let file = target.files[0]
         loadFile(file, options, characters, questions, setCurrentTab)
+        closeNav()
+    }
+
+    function closeNav() {
+        document.activeElement.blur()
+        toggleNav()
     }
 
 </script>
@@ -32,13 +38,15 @@
         <menuItem
             on:click={() => {
                 saveFile($options, $characters, $questions)
+                closeNav()
             }}
         >
             <SvgIcon path={mdiContentSave} type="mdi" size='1rem'/>
             Save
         </menuItem>
 
-        <label class="menuItem">
+        <label class="menuItem"
+        >
             <SvgIcon path={mdiFileUpload} type="mdi" size='1rem'/>
             Load
             <input type='file' accept='.qo' hidden on:change={(e) => {
@@ -49,6 +57,7 @@
         <menuItem
             on:click={() => {
                 exitFile(options, characters, questions, setCurrentTab)
+                closeNav()
             }}
         >
             <SvgIcon path={mdiExitRun} type="mdi" size='1rem'/>
@@ -72,6 +81,7 @@ icon {
     &:hover, &:focus {
         color: var(--white);
     }
+
 }
 
 burgerMenu {
@@ -100,4 +110,22 @@ menuItem, .menuItem {
         cursor: pointer;
     }
 }
+
+@media screen and (max-width: $phone-max) {
+    icon {
+        display: none;
+    }
+
+    burgerMenu {
+        display: block;
+        position: relative;
+    }
+
+    .menuItem, menuItem {
+        justify-items: center;
+        margin: auto;
+        width: min-content;
+    }
+}
+
 </style>
