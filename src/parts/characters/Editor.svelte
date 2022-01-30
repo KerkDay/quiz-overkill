@@ -31,7 +31,7 @@
     
   }
 
-	document.addEventListener('keydown', debounce((e) => {
+	document.addEventListener('keydown', (e) => {
       
     // Don't move foward or back if an input is selected
     let inputs = document.querySelectorAll(`textarea, input`)
@@ -40,16 +40,16 @@
 
     // Check for appropriate keys
     if ( e.key === 'ArrowLeft' )
-      dispatch('open', index-1)
+      dispatch('open', {moveBy: -1})
     else if ( e.key === 'ArrowRight')
-      dispatch('open', index+1)
+      dispatch('open', {moveBy: 1})
 
-	}))
+	})
 
 </script>
 
 
-<Modal on:open {index}>
+<Modal on:open arrows>
   <!-- Image -->
   <ImgOverlay img={char.img} alt={char.id} imgType={char.imgType} pos="modal">
     {#if char.img}

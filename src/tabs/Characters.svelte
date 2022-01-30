@@ -21,36 +21,42 @@
 
   /**
    * A function to change which characters modal is showing.
-   * @param val Which character should be opened?
+   * @param {Object} event An event outlining exactl what should happen
+   * @param {number} [event.goto] select a specific character
+   * @param {number} [event.moveBy] select a character above or below the current character
    */
-  function handleOpenCharacter(event) { 
-    // Check if it's a number, or an event, or is null
-    let val = typeof event === "number" 
-      ? event 
-      : event && typeof event.detail === "number"
-        ? event.detail
-        : null
+  const handleOpenCharacter = debounce((event) => { 
+    // If this is handled by a dispatch, reduce it.
+    if (event.type === "open") {
+      event = event.detail
+    }
 
+    let selected = null;
+    if ( event?.goto === null || typeof event?.goto === "number" ) {
+      selected = event.goto
+    } else if ( typeof event?.moveBy === "number" ) {
+      selected = ( opened || 0 ) + event.moveBy
+    }
 
-    if (val === null) {
-      // Force rerender of characters
+    
+    if (selected === null) {
+      // Force rerender of characters after modal is closed
       characters.set($characters)
     } else {
-      // Check if number is within array length. If not, loop around!
-      val = val >= $characters.length 
-        ? 0 
-        : val < 0 
-          ? $characters.length - 1
-          : val
+      if ( selected < 0 ) {
+        selected = $characters.length - 1
+      } else if ( selected >= $characters.length ) {
+        selected = 0
+      }
     }
 
     // If moved via left/right arrows, scroll to them
-    if ( typeof opened === 'number' && typeof val === 'number' && $characters[val] ) {
-      scrollTo(val)
+    if ( typeof selected === 'number' && $characters[selected] ) {
+      scrollTo(selected)
     }
 
-    opened = val
-  }
+    opened = selected
+  }, 50);
 
   /**
    * Scroll down to a specific character
@@ -58,7 +64,7 @@
    */
   let scrollTo = debounce((val) => {
     let selector = typeof val === 'string' ? val : $characters[val].id
-    let el = document.querySelector(`#${selector}`).getBoundingClientRect()
+    let el = document.querySelector(`#char-${selector}`).getBoundingClientRect()
     window.scrollBy({top: el.top - (el.height*2), behavior: 'smooth'})
   })
 
@@ -146,7 +152,7 @@
     <!-- New Character -->
     <button id='new-char-button' on:click={()=>{
         handleNewCharacter({}); 
-        handleOpenCharacter($characters.length-1);
+        handleOpenCharacter({moveBy: -1});
       }}>
       <SvgIcon path={mdiAccountPlus} type='mdi' size='1em' />
       Add Character
@@ -167,7 +173,7 @@
       <Character 
         {char}
         {index}
-        on:open={handleOpenCharacter}
+        on:open={() => handleOpenCharacter({goto: index})}
       />
     {/each}
   </characters>
@@ -177,7 +183,7 @@
   <Editor 
     char={$characters[opened]}
     index={opened}
-    on:open={handleOpenCharacter}
+    on:open={(event) => handleOpenCharacter(event)}
     on:duplicate={handleDuplicateCharacter}
     on:remove={handleRemoveCharacter} 
   />

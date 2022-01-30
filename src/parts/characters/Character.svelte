@@ -11,7 +11,7 @@
 
 
 
-<character id={char.id}>
+<character id={`char-${char.id}`}>
   <div class='thumb' on:click={dispatch('open', index)} transition:fade="{{duration: 300}}">
     <Img img={char.img} alt={char.id} imgType={char.imgType} pos="thumb"/>
     <div>

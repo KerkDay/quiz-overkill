@@ -2,12 +2,9 @@
 	import { fade } from 'svelte/transition'
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { createEventDispatcher } from 'svelte';
-  import { 
-    mdiArrowLeftCircle, 
-    mdiArrowRightCircle
-  } from '@mdi/js'
+  import { mdiArrowLeftCircle, mdiArrowRightCircle } from '@mdi/js'
 
-  export let index
+  export let arrows = false
 
   const dispatch = createEventDispatcher();
 
@@ -29,13 +26,13 @@
     <slot></slot>
   </div>
   
-  <x >&times;</x>
+  <x>&times;</x>
 
-  {#if typeof index === "number"}
-    <div class='prev' on:click={() => {dispatch('open', index-1)}}>
+  {#if arrows}
+    <div class='prev' on:click={() => {dispatch('open', {moveBy: -1})}}>
       <SvgIcon path={mdiArrowLeftCircle} type='mdi' size='2em'/>
     </div>
-    <div class='next' on:click={() => {dispatch('open', index+1)}}>
+    <div class='next' on:click={() => {dispatch('open', {moveBy: 1})}}>
       <SvgIcon path={mdiArrowRightCircle} type='mdi' size='2em'/>
     </div>
   {/if}
