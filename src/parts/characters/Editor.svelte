@@ -1,8 +1,7 @@
 <script>
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { mdiImagePlus, mdiImageRemove, mdiAccountRemove, mdiAccountMultiple } from '@mdi/js'
-  import { createEventDispatcher } from 'svelte';
-  import debounce from 'lodash/debounce'
+  import { createEventDispatcher } from 'svelte'
   import imageCompress from '../../scripts/imageCompress'
   import Modal from '../Modal.svelte'
   import ImgOverlay from '../ImgOverlay.svelte'
@@ -28,23 +27,7 @@
         char.img = data.url
       } else { char.imgType = oldType }
     } catch (e) { char.imgType = oldType }
-    
   }
-
-	document.addEventListener('keydown', (e) => {
-      
-    // Don't move foward or back if an input is selected
-    let inputs = document.querySelectorAll(`textarea, input`)
-    for (let input of inputs)
-      if (input === document.activeElement) return
-
-    // Check for appropriate keys
-    if ( e.key === 'ArrowLeft' )
-      dispatch('open', {moveBy: -1})
-    else if ( e.key === 'ArrowRight')
-      dispatch('open', {moveBy: 1})
-
-	})
 
 </script>
 

@@ -10,10 +10,21 @@
 
   // Exit Modal when escape key is pressed.
   document.addEventListener('keydown', (e) => {
+    // Escape key leaves the modal
 		if ( e.key === "Escape" ) {
 			e.preventDefault()
-			dispatch('open', null)
-		}
+			dispatch('open', {goto: null})
+    }
+
+    // Arrow Keys move forward and back
+    if ( !["INPUT", "TEXTAREA"].includes(document?.activeElement?.tagName) ) {
+      if ( e.key === 'ArrowLeft' ) {
+        dispatch('open', {moveBy: -1})
+      } else if ( e.key === 'ArrowRight') {
+        dispatch('open', {moveBy: 1})
+      }
+    }
+    
 	})
 
 </script>

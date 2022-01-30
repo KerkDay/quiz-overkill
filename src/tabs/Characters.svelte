@@ -7,7 +7,6 @@
   import SvgIcon from '@jamescoyle/svelte-icon'
   import { mdiAccountPlus, mdiImageMultiple  } from '@mdi/js'
   import imageCompress from '../scripts/imageCompress'
-
   import Character from '../parts/characters/Character.svelte'
   import Editor from '../parts/characters/Editor.svelte'
 
