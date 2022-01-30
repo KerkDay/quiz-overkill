@@ -223,6 +223,7 @@
     justify-content: center;
     @media screen and (max-width: $phone-max) {
       grid-template-columns: repeat(auto-fit, minmax(6em, 6em));
+      padding-top: 6em;
     }
   }
 </style>

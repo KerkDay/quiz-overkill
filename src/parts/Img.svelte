@@ -114,7 +114,11 @@ img, video {
   }
   @media screen and (max-width: $phone-max) {
     width: 5rem; height: 5rem;
-    img, video {border-radius: .25rem;}
+    img, video {
+      border-radius: .25rem;
+      width: 5rem;
+      height: 5rem;
+    }
   }
 }
 
@@ -130,6 +134,7 @@ img, video {
     display: block;
     flex-grow: 1;
     object-fit: contain;
+    height: 10rem;
   }
 }
 
